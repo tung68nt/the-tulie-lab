@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { api } from '@/lib/api';
 
-export function ActivityTracker() {
+function ActivityTrackerInner() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const lastPathRef = useRef<string | null>(null);
@@ -43,4 +43,12 @@ export function ActivityTracker() {
     };
 
     return null;
+}
+
+export function ActivityTracker() {
+    return (
+        <Suspense fallback={null}>
+            <ActivityTrackerInner />
+        </Suspense>
+    );
 }

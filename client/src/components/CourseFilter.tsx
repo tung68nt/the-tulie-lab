@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { api } from '@/lib/api';
 import { Search, Check } from 'lucide-react';
 
-export function CourseFilter() {
+function CourseFilterInner() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [categories, setCategories] = useState<any[]>([]);
@@ -127,5 +127,13 @@ export function CourseFilter() {
                 </button>
             )}
         </div>
+    );
+}
+
+export function CourseFilter() {
+    return (
+        <Suspense fallback={<div className="w-full md:w-64 shrink-0 space-y-6 animate-pulse"><div className="h-10 bg-muted rounded-lg" /></div>}>
+            <CourseFilterInner />
+        </Suspense>
     );
 }
