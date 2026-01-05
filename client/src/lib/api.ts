@@ -1,5 +1,8 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
-console.log('Using API URL:', API_URL);
+// Remove /api suffix if present to get clean base URL
+const envUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+const BASE_URL = envUrl.endsWith('/api') ? envUrl.slice(0, -4) : envUrl; // Strip /api suffix if exists
+
+console.log('Using BASE_URL for API:', BASE_URL);
 
 export class ApiError extends Error {
     constructor(public status: number, public message: string) {
@@ -8,7 +11,10 @@ export class ApiError extends Error {
 }
 
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${API_URL}${endpoint}`;
+    // Ensure endpoint starts with /
+    const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    const url = `${BASE_URL}/api${path}`;
+
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     const authHeader = token ? { 'Authorization': `Bearer ${token}` } : {};
 
@@ -20,6 +26,9 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 
     try {
         const response = await fetch(url, { ...options, headers, credentials: 'include' });
+        // ... (rest of request function same until catch)
+
+        // ...
 
         if (!response.ok) {
             if (response.status === 401 && !endpoint.includes('/auth/login') && typeof window !== 'undefined') {
@@ -244,7 +253,7 @@ export const api = {
         single: async (file: File): Promise<{ success: boolean, file: { url: string, originalName: string } }> => {
             const formData = new FormData();
             formData.append('file', file);
-            const response = await fetch(`${API_URL}/uploads`, {
+            const response = await fetch(`${BASE_URL}/uploads`, {
                 method: 'POST',
                 body: formData,
                 credentials: 'include'
@@ -255,7 +264,7 @@ export const api = {
         multiple: async (files: File[]): Promise<{ success: boolean, files: { url: string, originalName: string }[] }> => {
             const formData = new FormData();
             files.forEach(file => formData.append('files', file));
-            const response = await fetch(`${API_URL}/uploads/multiple`, {
+            const response = await fetch(`${BASE_URL}/uploads/multiple`, {
                 method: 'POST',
                 body: formData,
                 credentials: 'include'
