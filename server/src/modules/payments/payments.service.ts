@@ -234,7 +234,7 @@ export const getAllOrders = async (params: { page?: number; limit?: number; sear
         paid: stats.find(s => s.status === 'PAID')?._count.id || 0,
         pending: stats.find(s => s.status === 'PENDING')?._count.id || 0,
         cancelled: stats.find(s => s.status === 'CANCELLED')?._count.id || 0,
-        totalRevenue: stats.reduce((acc, curr) => acc + (curr.status === 'PAID' || curr.status === 'COMPLETED' ? Number(curr._sum.amount || 0) : 0), 0)
+        totalRevenue: stats.reduce((acc, curr) => acc + (curr.status === OrderStatus.PAID ? Number(curr._sum.amount || 0) : 0), 0)
     };
 
     return {
