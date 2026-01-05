@@ -23,11 +23,18 @@ app.use(helmet());
 app.use('/api', limiter); // Apply rate limiting to API routes
 app.use(cors({
   origin: (origin, callback) => {
-    const allowed = [process.env.CLIENT_URL, 'http://localhost:3000', 'http://127.0.0.1:3000'];
+    const allowed = [
+      process.env.CLIENT_URL,
+      'https://thelab.tulie.vn',
+      'https://www.thelab.tulie.vn',
+      'http://localhost:3000',
+      'http://127.0.0.1:3000'
+    ];
     if (!origin || allowed.includes(origin)) {
       callback(null, true);
     } else {
-      callback(null, true); // Fallback for development if needed, originally: callback(new Error('Not allowed by CORS'));
+      console.log('Blocked CORS origin:', origin); // Log blocked origin
+      callback(null, true); // Keep permissive for now to debug, but ideally should be error
     }
   },
   credentials: true
