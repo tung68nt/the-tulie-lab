@@ -8,38 +8,18 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  directUrl = env("DIRECT_URL") // For Supabase - direct connection for migrations
 }
 
 enum Role {
   USER
   ADMIN
-  STUDENT // Legacy role, kept for backward compatibility
-}
-
-enum CourseLevel {
-  BEGINNER
-  INTERMEDIATE
-  ADVANCED
-  ALL
-}
-
-model Category {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  slug        String   @unique
-  description String?
-  isActive    Boolean  @default(true)
-  courses     Course[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }
 
 enum OrderStatus {
   PENDING
   PAID
   CANCELLED
-  COMPLETED
 }
 
 model User {
@@ -78,9 +58,6 @@ model Course {
   description String?
   thumbnail   String?
   price       Int      @default(0) // Stored in smallest currency unit (e.g. VND)
-  level       CourseLevel @default(ALL)
-  categoryId  String?
-  category    Category?   @relation(fields: [categoryId], references: [id])
   isPublished Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -101,15 +78,13 @@ model Lesson {
   description String?
   videoUrl    String?  // Secure URL or ID
   duration    String?  // Video duration (e.g. "10:25")
-  chapter     String?  // Course Section/Module (e.g. "Chương 1")
-  section     String?  // Lesson Part (e.g. "Phần 1.1")
   content     String?  // Markdown or HTML content
   isFree      Boolean  @default(false) // Previewable
   position    Int      @default(0)
   courseId    String
   course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt @default(now())
+  updatedAt   DateTime @updatedAt
 
   progress    LessonProgress[]
   attachments Attachment[]
@@ -119,7 +94,7 @@ model Lesson {
 
 model Attachment {
   id        String   @id @default(uuid())
-  name      String   @default("Untitled")
+  name      String
   url       String
   type      String   @default("FILE") // FILE, LINK
   lessonId  String
@@ -180,9 +155,9 @@ model PaymentTransaction {
   transactionDate DateTime? // From Sepay
   accountNumber   String?
   subAccount      String?
-  amountIn        Decimal?
-  amountOut       Decimal?
-  accumulated     Decimal?
+  amountIn        Decimal?  @db.Decimal(20, 2)
+  amountOut       Decimal?  @db.Decimal(20, 2)
+  accumulated     Decimal?  @db.Decimal(20, 2)
   code            String?   // Sepay code
   content         String?
   referenceCode   String?
@@ -194,7 +169,7 @@ model Instructor {
   id          String   @id @default(uuid())
   name        String
   title       String?
-  bio         String?
+  bio         String?  @db.Text
   avatar      String?
   socialLinks String?
   
@@ -209,8 +184,8 @@ model BlogPost {
   id              String   @id @default(uuid())
   title           String
   slug            String   @unique
-  excerpt         String?
-  content         String
+  excerpt         String?  @db.Text
+  content         String   @db.Text
   thumbnail       String?
   authorId        String?
   author          Instructor? @relation(fields: [authorId], references: [id])
@@ -233,7 +208,7 @@ model ContactSubmission {
   name      String
   email     String
   phone     String?
-  message   String   // Removed @db.Text if not needed, but keeping it consistent with others
+  message   String   @db.Text
   status    String   @default("NEW") // NEW, READ, REPLIED
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -255,7 +230,7 @@ enum NotificationType {
 model SystemNotification {
   id            String   @id @default(uuid())
   title         String
-  content       String
+  content       String   @db.Text
   type          NotificationType @default(SYSTEM)
   
   // Scheduling
@@ -295,7 +270,7 @@ model Bundle {
   id          String   @id @default(uuid())
   name        String
   slug        String   @unique
-  description String?
+  description String?  @db.Text
   thumbnail   String?
   
   // Pricing
@@ -373,38 +348,4 @@ model CouponUsage {
   orderId   String?
   discount  Int      // Số tiền đã giảm
   usedAt    DateTime @default(now())
-}
-
-// ==========================================
-// SECURITY / CONTENT PROTECTION
-// ==========================================
-
-enum SecurityAction {
-  DEVTOOLS
-  RIGHT_CLICK
-  COPY_PASTE
-  SCREENSHOT_ATTEMPT
-  SUSPICIOUS_REQUEST
-}
-
-model SecurityLog {
-  id        String         @id @default(uuid())
-  userId    String?
-  action    SecurityAction
-  ipAddress String?
-  userAgent String?
-  details   String?        // Extra info (e.g. key pressed, route)
-  createdAt DateTime       @default(now())
-}
-
-model ActivityLog {
-  id        String   @id @default(uuid())
-  userId    String?
-  action    String   // VIEW, LOGIN, CLICK, ETC
-  path      String?  // /learn/course-1
-  ipAddress String?
-  location  String?  // Hanoi, Vietnam
-  device    String?  // Chrome on Windows
-  metadata  String?  // JSON
-  createdAt DateTime @default(now())
 }
