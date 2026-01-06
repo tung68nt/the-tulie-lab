@@ -136,7 +136,7 @@ export function Footer() {
                     {/* Left - Company Info */}
                     <div className="space-y-4 md:col-span-2">
 
-                        <h3 className="text-sm font-bold uppercase tracking-wide">{footerData.companyName}</h3>
+                        <p className="text-sm font-bold uppercase tracking-wide">{footerData.companyName}</p>
                         <p className="text-sm text-muted-foreground">
                             {footerData.tagline}
                         </p>
@@ -180,7 +180,7 @@ export function Footer() {
 
                     {/* Middle - Quick Links */}
                     <div className="space-y-4">
-                        <h4 className="text-sm font-bold tracking-wide">Liên kết</h4>
+                        <p className="text-sm font-bold tracking-wide">Liên kết</p>
                         <ul className="space-y-2 text-sm text-muted-foreground">
                             {footerData.quickLinks.map((link, index) => (
                                 <li key={index}>
@@ -194,7 +194,7 @@ export function Footer() {
 
                     {/* Right - Policies */}
                     <div className="space-y-4">
-                        <h4 className="text-sm font-bold tracking-wide">Chính sách</h4>
+                        <p className="text-sm font-bold tracking-wide">Chính sách</p>
                         <ul className="space-y-2 text-sm text-muted-foreground">
                             {footerData.policyLinks.map((link, index) => (
                                 <li key={index}>
@@ -208,7 +208,7 @@ export function Footer() {
 
                     {/* Social Links */}
                     <div className="space-y-4">
-                        <h4 className="text-sm font-bold tracking-wide">Theo dõi The Tulie Lab</h4>
+                        <p className="text-sm font-bold tracking-wide">Theo dõi The Tulie Lab</p>
                         <div className="flex flex-wrap gap-3">
                             {footerData.socialLinks.map((link, index) => (
                                 <a
