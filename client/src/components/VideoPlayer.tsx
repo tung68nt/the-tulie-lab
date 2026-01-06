@@ -72,9 +72,7 @@ export function VideoPlayer({ url, type, title, className = '' }: VideoPlayerPro
 
     // Direct video (self-hosted or external)
     const isExternalMp4 = videoType === 'EXTERNAL' && (url.endsWith('.mp4') || url.endsWith('.mov') || url.endsWith('.mkv'));
-    const videoSource = isExternalMp4
-        ? `${PROXY_BASE_URL}/proxy/stream?url=${encodeURIComponent(url)}`
-        : url;
+    const videoSource = url;
 
     return (
         <video
