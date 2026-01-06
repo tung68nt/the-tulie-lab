@@ -121,3 +121,59 @@ export const getTransactions = async (req: Request, res: Response) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const sendPaymentReminder = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { customMessage } = req.body;
+
+        if (!id) return res.status(400).json({ message: 'Missing order ID' });
+
+        // Get order with user and course info
+        const order = await require('../../config/prisma').default.order.findUnique({
+            where: { id },
+            include: {
+                user: true,
+                course: true
+            }
+        });
+
+        if (!order) return res.status(404).json({ message: 'Order not found' });
+        if (order.status !== 'PENDING') return res.status(400).json({ message: 'Order is not pending' });
+
+        // Get bank settings
+        const settings = await SettingsService.getSettings([
+            'bank_name', 'bank_account_no', 'bank_account_name', 'payment_transfer_syntax'
+        ]);
+
+        const bankName = settings.bank_name || 'VietinBank';
+        const accountNo = settings.bank_account_no || '104002106705';
+        const accountName = settings.bank_account_name || 'NGUYEN VAN A';
+        const syntax = settings.payment_transfer_syntax || '{{code}}';
+        const transferContent = syntax.replace('{{code}}', order.code);
+
+        // Send email
+        const emailService = require('../../services/email.service').default;
+        const success = await emailService.sendPaymentReminderEmail({
+            to: order.user.email,
+            userName: order.user.name || 'Bạn',
+            orderCode: order.code,
+            amount: order.amount,
+            courses: [order.course.title],
+            bankName,
+            accountNo,
+            accountName,
+            transferContent,
+            customMessage
+        });
+
+        if (success) {
+            res.json({ success: true, message: 'Đã gửi email nhắc thanh toán' });
+        } else {
+            res.status(500).json({ message: 'Lỗi gửi email' });
+        }
+    } catch (error: any) {
+        console.error('Send reminder error:', error);
+        res.status(500).json({ message: error.message });
+    }
+};

@@ -182,6 +182,10 @@ export const api = {
         },
         payments: {
             listTransactions: () => request('/payments/transactions'),
+            sendReminder: (orderId: string, customMessage?: string) => request(`/payments/orders/${orderId}/send-reminder`, {
+                method: 'POST',
+                body: JSON.stringify({ customMessage })
+            }),
         },
         cms: {
             update: (data: { key: string, value: string, type?: string }) => request('/cms', { method: 'POST', body: JSON.stringify(data) }),

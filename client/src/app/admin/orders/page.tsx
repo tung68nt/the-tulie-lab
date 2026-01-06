@@ -9,7 +9,7 @@ import { Pagination } from '@/components/Pagination';
 import { useToast } from '@/contexts/ToastContext';
 import Link from 'next/link';
 
-import { CheckCircle2, Clock, XCircle, Search, Download, RotateCcw, Loader2 } from 'lucide-react';
+import { CheckCircle2, Clock, XCircle, Search, Download, RotateCcw, Loader2, Mail } from 'lucide-react';
 
 interface Order {
     id: string;
@@ -39,6 +39,7 @@ export default function AdminOrdersPage() {
     const [debouncedSearch, setDebouncedSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [updatingId, setUpdatingId] = useState<string | null>(null);
+    const [remindingId, setRemindingId] = useState<string | null>(null);
     const [stats, setStats] = useState({
         total: 0,
         paid: 0,
@@ -96,6 +97,18 @@ export default function AdminOrdersPage() {
             addToast(`Lỗi: ${error?.message || 'Không thể cập nhật đơn hàng'}`, 'error');
         } finally {
             setUpdatingId(null);
+        }
+    };
+
+    const sendReminder = async (orderId: string) => {
+        try {
+            setRemindingId(orderId);
+            await api.admin.payments.sendReminder(orderId);
+            addToast('Đã gửi email nhắc thanh toán', 'success');
+        } catch (error: any) {
+            addToast(`Lỗi: ${error?.message || 'Không thể gửi email'}`, 'error');
+        } finally {
+            setRemindingId(null);
         }
     };
 
@@ -306,6 +319,16 @@ export default function AdminOrdersPage() {
                                                                     disabled={updatingId === order.id}
                                                                 >
                                                                     Cancel
+                                                                </Button>
+                                                                <Button
+                                                                    size="sm"
+                                                                    variant="outline"
+                                                                    className="text-foreground hover:bg-blue-50 h-7 px-2 text-[11px]"
+                                                                    onClick={() => sendReminder(order.id)}
+                                                                    disabled={remindingId === order.id}
+                                                                    title="Gửi email nhắc thanh toán"
+                                                                >
+                                                                    {remindingId === order.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Mail size={12} />}
                                                                 </Button>
                                                             </>
                                                         )}

@@ -10,6 +10,7 @@ router.post('/checkout', authenticate, PaymentController.checkout);
 router.get('/orders', authenticate, authorize(['ADMIN']), PaymentController.getAllOrders);
 router.put('/orders/:id/status', authenticate, authorize(['ADMIN']), PaymentController.updateStatus);
 router.get('/transactions', authenticate, authorize(['ADMIN']), PaymentController.getTransactions);
+router.post('/orders/:id/send-reminder', authenticate, authorize(['ADMIN']), PaymentController.sendPaymentReminder);
 
 router.get('/:code', authenticate, PaymentController.getOrder);
 router.post('/sepay-webhook', PaymentController.webhook); // Public callback

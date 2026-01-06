@@ -242,6 +242,76 @@ const emailTemplates = {
             </html>
         `,
     }),
+
+    paymentReminder: (data: {
+        userName: string;
+        orderCode: string;
+        amount: number;
+        courses: string[];
+        bankName: string;
+        accountNo: string;
+        accountName: string;
+        transferContent: string;
+        qrUrl: string;
+        customMessage?: string;
+    }) => ({
+        subject: `⏰ Nhắc thanh toán đơn hàng #${data.orderCode} - The Tulie Lab`,
+        html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Nhắc thanh toán</title>
+            </head>
+            <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #000; max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #fff;">
+                <div style="border: 1px solid #e0e0e0; padding: 40px;">
+                    <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 30px 0; color: #000;">The Tulie Lab</h1>
+                    
+                    <p style="font-size: 16px; margin: 0 0 20px 0;">Xin chào ${data.userName},</p>
+                    
+                    ${data.customMessage ? `<p style="font-size: 14px; color: #333; margin: 0 0 20px 0; background: #f9f9f9; padding: 15px; border-left: 3px solid #000;">${data.customMessage}</p>` : ''}
+                    
+                    <p style="font-size: 14px; color: #333; margin: 0 0 10px 0;">Đơn hàng <strong>#${data.orderCode}</strong> của bạn đang chờ thanh toán.</p>
+                    
+                    <div style="background-color: #f9f9f9; padding: 20px; margin: 20px 0;">
+                        <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>Khóa học:</strong></p>
+                        <ul style="color: #333; padding-left: 20px; margin: 0 0 15px 0; font-size: 14px;">
+                            ${data.courses.map(c => `<li style="margin-bottom: 5px;">${c}</li>`).join('')}
+                        </ul>
+                        <p style="margin: 0; font-size: 18px; font-weight: bold;">Tổng tiền: ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(data.amount)}</p>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 30px 0;">
+                        <p style="font-size: 14px; margin: 0 0 15px 0; font-weight: 600;">Quét mã QR để thanh toán:</p>
+                        <img src="${data.qrUrl}" alt="QR Code thanh toán" style="width: 200px; height: 200px; border: 1px solid #e0e0e0; padding: 10px; background: #fff;">
+                    </div>
+                    
+                    <div style="border: 1px solid #000; padding: 20px; margin: 20px 0;">
+                        <p style="font-weight: 600; margin: 0 0 15px 0; font-size: 14px;">Hoặc chuyển khoản thủ công:</p>
+                        <p style="margin: 0 0 5px 0; font-size: 14px;"><strong>Ngân hàng:</strong> ${data.bankName}</p>
+                        <p style="margin: 0 0 5px 0; font-size: 14px;"><strong>Số tài khoản:</strong> ${data.accountNo}</p>
+                        <p style="margin: 0 0 5px 0; font-size: 14px;"><strong>Chủ tài khoản:</strong> ${data.accountName}</p>
+                        <p style="margin: 15px 0 0 0; font-size: 14px; background: #fff7ed; padding: 10px; border: 1px solid #f97316;"><strong>Nội dung CK:</strong> ${data.transferContent}</p>
+                    </div>
+                    
+                    <p style="font-size: 13px; color: #666; margin: 20px 0;">Sau khi thanh toán, hệ thống sẽ tự động xác nhận và mở khóa khóa học cho bạn trong vòng 1-2 phút.</p>
+                    
+                    <div style="margin: 30px 0; text-align: center;">
+                        <a href="${process.env.CLIENT_URL || 'http://localhost:3000'}/order/${data.orderCode}" style="background-color: #000; color: #fff; padding: 14px 32px; text-decoration: none; font-size: 14px; font-weight: 500; display: inline-block;">
+                            Xem chi tiết đơn hàng
+                        </a>
+                    </div>
+                    
+                    <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 40px 0 20px 0;">
+                    <p style="font-size: 12px; color: #999; margin: 0;">
+                        © ${new Date().getFullYear()} The Tulie Lab. Học để làm được, không chỉ để biết.
+                    </p>
+                </div>
+            </body>
+            </html>
+        `,
+    }),
 };
 
 // Email sending functions
@@ -393,6 +463,41 @@ export const emailService = {
             return true;
         } catch (error) {
             console.error('❌ Error sending admin order notification:', error);
+            return false;
+        }
+    },
+
+    async sendPaymentReminderEmail(data: {
+        to: string;
+        userName: string;
+        orderCode: string;
+        amount: number;
+        courses: string[];
+        bankName: string;
+        accountNo: string;
+        accountName: string;
+        transferContent: string;
+        customMessage?: string;
+    }) {
+        // Generate QR URL
+        const qrUrl = `https://qr.sepay.vn/img?acc=${data.accountNo}&bank=${data.bankName}&amount=${data.amount}&des=${encodeURIComponent(data.transferContent)}`;
+
+        const template = emailTemplates.paymentReminder({
+            ...data,
+            qrUrl
+        });
+
+        try {
+            await transporter.sendMail({
+                from: `"The Tulie Lab" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+                to: data.to,
+                subject: template.subject,
+                html: template.html,
+            });
+            console.log(`✅ Payment reminder email sent to ${data.to}`);
+            return true;
+        } catch (error) {
+            console.error('❌ Error sending payment reminder email:', error);
             return false;
         }
     },
