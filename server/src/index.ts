@@ -27,14 +27,28 @@ app.use(cors({
       process.env.CLIENT_URL,
       'https://thelab.tulie.vn',
       'https://www.thelab.tulie.vn',
+      'https://the-tulie-lab.vercel.app',
+      'https://beta.thelab.tulie.vn',
       'http://localhost:3000',
       'http://127.0.0.1:3000'
-    ];
-    if (!origin || allowed.includes(origin)) {
+    ].filter(Boolean); // Remove undefined/null values
+
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+
+    if (allowed.includes(origin)) {
       callback(null, true);
     } else {
-      console.log('Blocked CORS origin:', origin); // Log blocked origin
-      callback(null, true); // Keep permissive for now to debug, but ideally should be error
+      console.log('Blocked CORS origin:', origin);
+      // In production, reject unknown origins
+      if (process.env.NODE_ENV === 'production') {
+        callback(new Error('Not allowed by CORS'));
+      } else {
+        callback(null, true); // Allow in development for easier debugging
+      }
     }
   },
   credentials: true
