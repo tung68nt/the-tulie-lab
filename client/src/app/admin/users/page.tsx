@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { Pagination } from '@/components/Pagination';
 import { useToast } from '@/contexts/ToastContext';
+import { useConfirm } from '@/components/ConfirmDialog';
 import { CheckCircle2, Clock, ChevronRight, ChevronDown, Trash2 } from 'lucide-react';
 
 export default function AdminUsersPage() {
@@ -13,6 +14,7 @@ export default function AdminUsersPage() {
     const [courses, setCourses] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const { addToast } = useToast();
+    const confirm = useConfirm();
     const [selectedCourse, setSelectedCourse] = useState<{ [key: string]: string }>({});
     const [expandedUser, setExpandedUser] = useState<string | null>(null);
 
@@ -57,11 +59,17 @@ export default function AdminUsersPage() {
     };
 
     const handleUnenroll = async (userId: string, courseId: string) => {
-        if (!confirm('Bạn có chắc muốn gỡ khóa học này khỏi học viên?')) return;
+        const confirmed = await confirm({
+            title: 'Xác nhận gỡ khóa học',
+            message: 'Bạn có chắc muốn gỡ khóa học này khỏi học viên?',
+            variant: 'danger',
+            confirmText: 'Gỡ khóa học',
+            cancelText: 'Hủy'
+        });
+        if (!confirmed) return;
         try {
             await api.admin.unenrollUser(userId, courseId);
             addToast('Đã gỡ khóa học thành công', 'success');
-            // Refresh details for this user
             fetchUserDetails(userId);
         } catch (e) {
             console.error(e);

@@ -589,7 +589,7 @@ export default function AdminDashboardPage() {
                         </div>
                     ) : inactiveUsers.length === 0 ? (
                         <div className="text-center py-8 text-muted-foreground">
-                            🎉 Tất cả member đều đang hoạt động!
+                            Tất cả member đều đang hoạt động!
                         </div>
                     ) : (
                         <div className="space-y-2">

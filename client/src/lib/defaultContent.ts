@@ -18,19 +18,19 @@ export const DEFAULT_LANDING_PAGE_SECTIONS: Section[] = [
         content: 'Bạn đang gặp khó khăn biến ý tưởng của mình thành hiện thực? Đừng lo, 90% người có ý tưởng đều gặp vấn đề tương tự.',
         items: [
             {
-                title: '😫 "Không biết code, làm sao build app?"',
+                title: '"Không biết code, làm sao build app?"',
                 description: 'Học lập trình truyền thống mất 1-2 năm. Thuê developer thì chi phí cao, khó kiểm soát chất lượng. Bạn cảm thấy bế tắc.',
-                icon: '🚧'
+                icon: 'CircleHelp'
             },
             {
-                title: '💸 "Công cụ no-code hạn chế, nâng cấp phải trả phí cao"',
+                title: '"Công cụ no-code hạn chế, nâng cấp phải trả phí cao"',
                 description: 'Wix, Bubble... chỉ làm được landing page đơn giản. Muốn custom logic phức tạp? Xin lỗi, không hỗ trợ hoặc phí hàng trăm USD/tháng.',
-                icon: '💰'
+                icon: 'Banknote'
             },
             {
-                title: '🤯 "ChatGPT cho code, nhưng ghép lại thì... lỗi!"',
+                title: '"ChatGPT cho code, nhưng ghép lại thì... lỗi!"',
                 description: 'AI viết code rời rạc, copy-paste vào không chạy. Không ai hướng dẫn cách tổ chức file, deploy, hay fix bug thực tế.',
-                icon: '🔧'
+                icon: 'Wrench'
             }
         ]
     },
@@ -42,7 +42,7 @@ export const DEFAULT_LANDING_PAGE_SECTIONS: Section[] = [
         content: 'Không phải học code truyền thống. Không phải no-code giới hạn. Vibe Coding là cách tiếp cận mới - dùng AI như trợ lý, bạn là kiến trúc sư.',
         items: [
             {
-                title: '❌ Cách cũ',
+                title: '1. Cách cũ',
                 description: 'Học code 6 tháng → Làm dự án nhỏ → Mất hứng → Bỏ cuộc.',
                 features: [
                     'Học syntax mệt mỏi',
@@ -52,7 +52,7 @@ export const DEFAULT_LANDING_PAGE_SECTIONS: Section[] = [
                 ]
             },
             {
-                title: '✅ Vibe Coding',
+                title: '2. Vibe Coding',
                 description: 'Có ý tưởng → Prompt AI → Review & tinh chỉnh → Ship sản phẩm thật.',
                 price: 'Hiệu quả gấp 10 lần',
                 features: [
@@ -202,17 +202,17 @@ The Tulie Lab cung cấp tất cả điều đó trong các Workshop thực hàn
             {
                 title: 'Tulie (Founder)',
                 description: '10+ năm kinh nghiệm Full-stack. Ex-Tech Lead tại các startup triệu USD. Đã build 50+ products.',
-                icon: '👨‍💻'
+                icon: 'Code2'
             },
             {
                 title: 'Community Mentors',
                 description: 'Đội ngũ TA và mentors là Member xuất sắc đã ship sản phẩm thành công.',
-                icon: '🤝'
+                icon: 'Handshake'
             },
             {
                 title: 'Guest speakers',
                 description: 'Founders và CTOs từ các startup Việt Nam chia sẻ kinh nghiệm thực tế.',
-                icon: '🎤'
+                icon: 'Mic'
             }
         ]
     },

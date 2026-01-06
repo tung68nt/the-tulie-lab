@@ -8,6 +8,7 @@ import { Input } from '@/components/Input';
 import { Button } from '@/components/Button';
 import { Card, CardContent } from '@/components/Card';
 import { Pagination } from '@/components/Pagination';
+import { useConfirm } from '@/components/ConfirmDialog';
 
 // Helper for Badge colors - B/W only
 const getStatusBadge = (status: string) => {
@@ -25,6 +26,7 @@ const getStatusBadge = (status: string) => {
 
 export default function AdminContactPage() {
     const { addToast } = useToast();
+    const confirm = useConfirm();
     const [submissions, setSubmissions] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
@@ -80,7 +82,14 @@ export default function AdminContactPage() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Bạn có chắc muốn xóa liên hệ này?')) return;
+        const confirmed = await confirm({
+            title: 'Xóa liên hệ?',
+            message: 'Bạn có chắc muốn xóa liên hệ này?',
+            variant: 'danger',
+            confirmText: 'Xóa',
+            cancelText: 'Hủy'
+        });
+        if (!confirmed) return;
         try {
             await api.admin.contact.delete(id);
             addToast('Đã xóa liên hệ', 'success');

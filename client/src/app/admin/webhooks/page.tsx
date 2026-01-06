@@ -6,7 +6,8 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/com
 import { useToast } from '@/contexts/ToastContext';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
-import { Clock, CheckCircle2, AlertCircle, Search, RefreshCcw, Copy, Save, Loader2 } from 'lucide-react';
+import { useConfirm } from '@/components/ConfirmDialog';
+import { Clock, CircleAlert, Search, RefreshCcw, Copy, Save, Loader2 } from 'lucide-react';
 
 export default function AdminWebhooksPage() {
     const [transactions, setTransactions] = useState<any[]>([]);
@@ -26,6 +27,7 @@ export default function AdminWebhooksPage() {
     const [apiKey, setApiKey] = useState<string | null>(null);
     const [showApiKey, setShowApiKey] = useState(false);
     const [regenerating, setRegenerating] = useState(false);
+    const confirm = useConfirm();
 
     const fetchTransactions = async () => {
         try {
@@ -89,7 +91,16 @@ export default function AdminWebhooksPage() {
     };
 
     const handleRegenerateApiKey = async () => {
-        if (!confirm('Bạn có chắc muốn tạo lại API Key? Key cũ sẽ không còn hoạt động.')) return;
+        const confirmed = await confirm({
+            title: 'Tạo lại API Key',
+            message: 'Bạn có chắc muốn tạo lại API Key? Key cũ sẽ không còn hoạt động, các webhook đang sử dụng key cũ sẽ bị lỗi.',
+            variant: 'warning',
+            confirmText: 'Tạo lại',
+            cancelText: 'Hủy'
+        });
+
+        if (!confirmed) return;
+
         setRegenerating(true);
         try {
             const data: any = await api.admin.settings.regenerateApiKey();
@@ -322,8 +333,9 @@ export default function AdminWebhooksPage() {
                         </div>
                     )}
                     {!bankConfig.bank_account_no && (
-                        <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-sm text-amber-700 dark:text-amber-300">
-                            ⚠️ Vui lòng cấu hình thông tin tài khoản nhận tiền ở trên trước khi tạo mã QR.
+                        <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-sm text-amber-700 dark:text-amber-300 flex items-center gap-2">
+                            <CircleAlert className="h-4 w-4 shrink-0" />
+                            Vui lòng cấu hình thông tin tài khoản nhận tiền ở trên trước khi tạo mã QR.
                         </div>
                     )}
                 </CardContent>
@@ -426,7 +438,7 @@ export default function AdminWebhooksPage() {
                 <Card>
                     <CardContent className="pt-8 pb-8 flex flex-col items-center justify-center text-center">
                         <div className="p-2 bg-muted rounded-full mb-3">
-                            <AlertCircle size={24} className="text-muted-foreground" />
+                            <CircleAlert size={24} className="text-muted-foreground" />
                         </div>
                         <p className="text-sm text-muted-foreground mb-1">Xử lý lỗi</p>
                         <p className="text-2xl font-bold">0 GD</p>

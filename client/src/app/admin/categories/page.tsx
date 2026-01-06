@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { useToast } from '@/contexts/ToastContext';
 import { Button } from '@/components/Button';
+import { useConfirm } from '@/components/ConfirmDialog';
 import { Input } from '@/components/Input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/Card';
 import { Switch } from '@/components/Switch';
@@ -25,6 +26,7 @@ export default function AdminCategoriesPage() {
     const [isEditing, setIsEditing] = useState(false);
     const [currentCategory, setCurrentCategory] = useState<Partial<Category>>({});
     const { addToast } = useToast();
+    const confirm = useConfirm();
 
     useEffect(() => {
         fetchCategories();
@@ -48,7 +50,16 @@ export default function AdminCategoriesPage() {
             addToast(`Không thể xóa danh mục đang có ${count} khóa học`, 'error');
             return;
         }
-        if (!confirm('Bạn có chắc chắn muốn xóa danh mục này?')) return;
+
+        const confirmed = await confirm({
+            title: 'Xóa danh mục?',
+            message: 'Bạn có chắc chắn muốn xóa danh mục này?',
+            variant: 'danger',
+            confirmText: 'Xóa',
+            cancelText: 'Hủy'
+        });
+
+        if (!confirmed) return;
 
         try {
             await api.categories.delete(id);

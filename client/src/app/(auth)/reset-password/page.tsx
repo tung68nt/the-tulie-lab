@@ -8,6 +8,7 @@ import { Input } from '@/components/Input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/Card';
 import { Logo } from '@/components/Logo';
 import { useToast } from '@/contexts/ToastContext';
+import { CircleCheck, Eye, EyeOff, CircleX } from 'lucide-react';
 
 function ResetPasswordContent() {
     const [isLoading, setIsLoading] = useState(false);
@@ -71,7 +72,9 @@ function ResetPasswordContent() {
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/30 p-4">
                 <Card className="shadow-xl border-0 bg-card/80 backdrop-blur max-w-md w-full">
                     <CardContent className="py-12 text-center">
-                        <div className="text-6xl mb-4">❌</div>
+                        <div className="flex justify-center mb-4">
+                            <CircleX className="h-16 w-16 text-destructive" />
+                        </div>
                         <h2 className="text-xl font-bold mb-2">Link không hợp lệ</h2>
                         <p className="text-muted-foreground mb-6">Link đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.</p>
                         <Link href="/forgot-password">
@@ -100,7 +103,9 @@ function ResetPasswordContent() {
                     <CardContent className="space-y-4">
                         {success ? (
                             <div className="text-center py-8">
-                                <div className="text-6xl mb-4">✅</div>
+                                <div className="flex justify-center mb-4">
+                                    <CircleCheck className="h-16 w-16 text-green-500" />
+                                </div>
                                 <h3 className="text-xl font-semibold mb-2">Thành công!</h3>
                                 <p className="text-muted-foreground mb-6">
                                     Mật khẩu của bạn đã được đặt lại thành công.
@@ -130,7 +135,7 @@ function ResetPasswordContent() {
                                             onClick={() => setShowPassword(!showPassword)}
                                             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                                         >
-                                            {showPassword ? '🙈' : '👁️'}
+                                            {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                                         </button>
                                     </div>
                                 </div>
@@ -153,7 +158,7 @@ function ResetPasswordContent() {
                                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                                         >
-                                            {showConfirmPassword ? '🙈' : '👁️'}
+                                            {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                                         </button>
                                     </div>
                                 </div>

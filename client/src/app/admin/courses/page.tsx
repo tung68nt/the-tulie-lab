@@ -7,9 +7,11 @@ import { Button } from '@/components/Button';
 import { Pagination } from '@/components/Pagination';
 import Link from 'next/link';
 import { useToast } from '@/contexts/ToastContext';
+import { useConfirm } from '@/components/ConfirmDialog';
 
 export default function AdminCoursesPage() {
     const { addToast } = useToast();
+    const confirm = useConfirm();
     const [courses, setCourses] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -33,7 +35,14 @@ export default function AdminCoursesPage() {
     }, []);
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this course?')) return;
+        const confirmed = await confirm({
+            title: 'Delete Course?',
+            message: 'Are you sure you want to delete this course?',
+            variant: 'danger',
+            confirmText: 'Delete',
+            cancelText: 'Cancel'
+        });
+        if (!confirmed) return;
         try {
             await api.admin.courses.delete(id);
             setCourses(courses.filter(c => c.id !== id));

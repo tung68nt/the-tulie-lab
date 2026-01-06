@@ -1,4 +1,5 @@
 import { Section } from '@/types/sections';
+import { DynamicIcon } from '@/components/DynamicIcon';
 
 export function StatsSection({ section }: { section: Section }) {
     return (
@@ -30,8 +31,7 @@ export function StatsSection({ section }: { section: Section }) {
                             <div className="flex items-center gap-4 mb-4">
                                 {item.icon && (
                                     <div className="inline-flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors shrink-0">
-                                        {/* Simple icon placeholder or we can use a huge icon set */}
-                                        <span className="text-xl md:text-2xl">⚡</span>
+                                        <DynamicIcon name={item.icon} className="h-6 w-6 md:h-7 md:w-7" />
                                     </div>
                                 )}
                                 <h3 className="text-lg md:text-xl font-bold">{item.title}</h3>

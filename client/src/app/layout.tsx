@@ -5,6 +5,7 @@ import { MainLayout } from '@/components/MainLayout';
 import { ToastProvider } from '@/contexts/ToastContext';
 import { SettingsProvider } from '@/contexts/SettingsContext';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { ConfirmProvider } from '@/components/ConfirmDialog';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -32,7 +33,9 @@ export default function RootLayout({
         <ToastProvider>
           <AuthProvider>
             <SettingsProvider>
-              <MainLayout>{children}</MainLayout>
+              <ConfirmProvider>
+                <MainLayout>{children}</MainLayout>
+              </ConfirmProvider>
             </SettingsProvider>
           </AuthProvider>
         </ToastProvider>

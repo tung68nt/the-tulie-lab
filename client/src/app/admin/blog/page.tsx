@@ -5,6 +5,7 @@ import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/Card';
 import { useToast } from '@/contexts/ToastContext';
+import { useConfirm } from '@/components/ConfirmDialog';
 
 interface BlogPost {
     id: string;
@@ -24,6 +25,7 @@ export default function AdminBlogPage() {
     const [showForm, setShowForm] = useState(false);
     const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
     const { addToast } = useToast();
+    const confirm = useConfirm();
 
     // Form state
     const [formData, setFormData] = useState({
@@ -126,7 +128,14 @@ export default function AdminBlogPage() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Bạn có chắc muốn xóa bài viết này?')) return;
+        const confirmed = await confirm({
+            title: 'Xóa bài viết?',
+            message: 'Bạn có chắc muốn xóa bài viết này?',
+            variant: 'danger',
+            confirmText: 'Xóa',
+            cancelText: 'Hủy'
+        });
+        if (!confirmed) return;
 
         const token = localStorage.getItem('token');
         try {

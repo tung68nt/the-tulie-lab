@@ -6,6 +6,7 @@ import { Button } from '@/components/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/Card';
 import { Input } from '@/components/Input';
 import { useToast } from '@/contexts/ToastContext';
+import { useConfirm } from '@/components/ConfirmDialog';
 
 // Define Instructor interface for type safety
 interface InstructorExperience {
@@ -40,6 +41,7 @@ const emptyInstructor: Instructor = {
 
 export default function AdminInstructorsPage() {
     const { addToast } = useToast();
+    const confirm = useConfirm();
     const [instructors, setInstructors] = useState<Instructor[]>([]);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
@@ -91,7 +93,14 @@ export default function AdminInstructorsPage() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Bạn có chắc chắn muốn xóa giảng viên này không?')) return;
+        const confirmed = await confirm({
+            title: 'Xóa giảng viên?',
+            message: 'Bạn có chắc chắn muốn xóa giảng viên này không?',
+            variant: 'danger',
+            confirmText: 'Xóa',
+            cancelText: 'Hủy'
+        });
+        if (!confirmed) return;
 
         try {
             await api.admin.instructors.delete(id);

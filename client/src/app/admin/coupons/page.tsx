@@ -6,9 +6,11 @@ import { api } from '@/lib/api';
 import { Button } from '@/components/Button';
 import { Card, CardContent } from '@/components/Card';
 import { useToast } from '@/contexts/ToastContext';
+import { useConfirm } from '@/components/ConfirmDialog';
 
 export default function CouponsPage() {
     const { addToast } = useToast();
+    const confirm = useConfirm();
     const [coupons, setCoupons] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -29,7 +31,14 @@ export default function CouponsPage() {
     }, []);
 
     const handleDelete = async (id: string, code: string) => {
-        if (!confirm(`Bạn có chắc muốn xóa mã "${code}"?`)) return;
+        const confirmed = await confirm({
+            title: 'Xác nhận xóa',
+            message: `Bạn có chắc muốn xóa mã "${code}"?`,
+            variant: 'danger',
+            confirmText: 'Xóa',
+            cancelText: 'Hủy'
+        });
+        if (!confirmed) return;
         try {
             await api.coupons.delete(id);
             addToast('Đã xóa mã giảm giá', 'success');

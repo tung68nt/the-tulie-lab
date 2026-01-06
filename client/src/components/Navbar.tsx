@@ -17,7 +17,12 @@ interface UserProfile {
     avatar?: string;
 }
 
+import { useToast } from '@/contexts/ToastContext';
+import { useConfirm } from '@/components/ConfirmDialog';
+
 export function Navbar() {
+    const { addToast } = useToast();
+    const confirm = useConfirm();
     const [user, setUser] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
@@ -62,9 +67,10 @@ export function Navbar() {
                 // 4. Force check auth to sync across tabs/components
                 window.dispatchEvent(new Event('auth-change'));
             }
+
         } catch (error) {
             console.error('Failed to update avatar:', error);
-            alert('Lỗi khi cập nhật ảnh đại diện');
+            addToast('Lỗi khi cập nhật ảnh đại diện', 'error');
         } finally {
             // Reset input so same file can be selected again
             if (fileInputRef.current) fileInputRef.current.value = '';

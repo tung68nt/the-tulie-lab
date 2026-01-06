@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { Button } from '@/components/Button';
 import { useToast } from '@/contexts/ToastContext';
+import { useConfirm } from '@/components/ConfirmDialog';
 import { Switch } from '@/components/Switch';
 import { Pencil, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -16,6 +17,7 @@ export default function NotificationsPage() {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const { addToast } = useToast();
+    const confirm = useConfirm();
 
     // Form state
     const [formData, setFormData] = useState({
@@ -107,7 +109,14 @@ export default function NotificationsPage() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Bạn có chắc muốn xóa thông báo này?')) return;
+        const confirmed = await confirm({
+            title: 'Xóa thông báo',
+            message: 'Bạn có chắc muốn xóa thông báo này?',
+            variant: 'danger',
+            confirmText: 'Xóa',
+            cancelText: 'Hủy'
+        });
+        if (!confirmed) return;
         try {
             await api.notifications.delete(id);
             addToast('Đã xóa thông báo', 'success');

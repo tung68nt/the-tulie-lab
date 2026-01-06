@@ -6,9 +6,11 @@ import { api } from '@/lib/api';
 import { Button } from '@/components/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/Card';
 import { useToast } from '@/contexts/ToastContext';
+import { useConfirm } from '@/components/ConfirmDialog';
 
 export default function BundlesPage() {
     const { addToast } = useToast();
+    const confirm = useConfirm();
     const [bundles, setBundles] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -29,7 +31,14 @@ export default function BundlesPage() {
     }, []);
 
     const handleDelete = async (id: string, name: string) => {
-        if (!confirm(`Bạn có chắc muốn xóa combo "${name}"?`)) return;
+        const confirmed = await confirm({
+            title: 'Xác nhận xóa',
+            message: `Bạn có chắc muốn xóa combo "${name}"?`,
+            variant: 'danger',
+            confirmText: 'Xóa',
+            cancelText: 'Hủy'
+        });
+        if (!confirmed) return;
         try {
             await api.bundles.delete(id);
             addToast('Đã xóa combo', 'success');

@@ -1,5 +1,6 @@
 import { Section } from '@/types/sections';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/Card';
+import { Check } from 'lucide-react';
 
 export function ComparisonSection({ section }: { section: Section }) {
     return (
@@ -49,9 +50,9 @@ export function ComparisonSection({ section }: { section: Section }) {
                                     {item.features?.map((feat: string, i: number) => (
                                         <li key={i} className="flex items-start gap-2">
                                             {index === 1 ? (
-                                                <span className="text-primary font-bold">✓</span>
+                                                <Check className="h-5 w-5 text-primary shrink-0" />
                                             ) : (
-                                                <span className="text-muted-foreground">•</span>
+                                                <span className="text-muted-foreground scale-150 leading-tight">•</span>
                                             )}
                                             <span className={index === 1 ? 'font-medium' : 'text-muted-foreground'}>
                                                 {feat}

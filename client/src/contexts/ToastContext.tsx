@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { CircleCheck, CircleX, Info, TriangleAlert, X } from 'lucide-react';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
@@ -104,17 +105,17 @@ const ToastContainer = ({ toasts, removeToast }: { toasts: Toast[], removeToast:
                     style={{ pointerEvents: 'auto' }}
                 >
                     <div className="flex-shrink-0">
-                        {toast.type === 'success' && <span className="text-green-400 text-lg font-bold">✓</span>}
-                        {toast.type === 'error' && <span className="text-white text-lg font-bold">✕</span>}
-                        {toast.type === 'info' && <span className="text-blue-200 text-lg">ℹ</span>}
-                        {toast.type === 'warning' && <span className="text-yellow-800 text-lg">⚠</span>}
+                        {toast.type === 'success' && <CircleCheck className="h-5 w-5 text-green-400" />}
+                        {toast.type === 'error' && <CircleX className="h-5 w-5 text-white" />}
+                        {toast.type === 'info' && <Info className="h-5 w-5 text-blue-200" />}
+                        {toast.type === 'warning' && <TriangleAlert className="h-5 w-5 text-yellow-800" />}
                     </div>
                     <span className="font-medium text-sm flex-1">{toast.message}</span>
                     <button
                         onClick={(e) => { e.stopPropagation(); removeToast(toast.id); }}
-                        className="opacity-70 hover:opacity-100 ml-2 text-lg"
+                        className="opacity-70 hover:opacity-100 ml-2"
                     >
-                        ×
+                        <X className="h-4 w-4" />
                     </button>
                 </div>
             ))}

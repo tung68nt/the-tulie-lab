@@ -7,6 +7,7 @@ import { Input } from '@/components/Input';
 import { useToast } from '@/contexts/ToastContext';
 import { Mail, Eye, Code, Save, Settings, ChevronDown, ChevronUp, Send } from 'lucide-react';
 import { api } from '@/lib/api';
+import { useConfirm } from '@/components/ConfirmDialog';
 
 // Default email templates
 const defaultTemplates: Record<string, { subject: string; html: string }> = {
@@ -81,7 +82,7 @@ const defaultTemplates: Record<string, { subject: string; html: string }> = {
     <div style="border: 1px solid #e0e0e0; padding: 40px;">
         <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 30px 0; color: #000;">The Tulie Lab</h1>
         <p style="font-size: 16px; margin: 0 0 20px 0;">Xin chào \${userName},</p>
-        <p style="font-size: 14px; color: #333; margin: 0 0 20px 0;">🎉 Thanh toán của bạn đã được xác nhận thành công!</p>
+        <p style="font-size: 14px; color: #333; margin: 0 0 20px 0;">Thanh toán của bạn đã được xác nhận thành công!</p>
         <div style="background-color: #f9f9f9; padding: 20px; margin: 20px 0;">
             <p style="font-weight: 600; margin: 0 0 10px 0; font-size: 14px;">Thông tin đơn hàng:</p>
             <p style="font-size: 14px; margin: 0;">Mã đơn: <strong>\${orderCode}</strong></p>
@@ -131,6 +132,7 @@ const templateList = [
 
 export default function AdminEmailsPage() {
     const { addToast } = useToast();
+    const confirm = useConfirm();
     const [activeTab, setActiveTab] = useState<'templates' | 'smtp'>('templates');
     const [selectedTemplate, setSelectedTemplate] = useState(templateList[0].id);
     const [templates, setTemplates] = useState<Record<string, { subject: string; html: string }>>(defaultTemplates);
@@ -211,8 +213,16 @@ export default function AdminEmailsPage() {
         }
     };
 
-    const handleResetTemplate = () => {
-        if (confirm('Khôi phục template về mặc định?')) {
+    const handleResetTemplate = async () => {
+        const confirmed = await confirm({
+            title: 'Khôi phục template',
+            message: 'Bạn có chắc muốn khôi phục template về mặc định? Các thay đổi sẽ bị mất.',
+            variant: 'warning',
+            confirmText: 'Khôi phục',
+            cancelText: 'Hủy'
+        });
+
+        if (confirmed) {
             setTemplates(prev => ({
                 ...prev,
                 [selectedTemplate]: defaultTemplates[selectedTemplate],

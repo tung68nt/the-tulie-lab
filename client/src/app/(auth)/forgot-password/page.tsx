@@ -7,6 +7,7 @@ import { Input } from '@/components/Input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/Card';
 import { Logo } from '@/components/Logo';
 import { useToast } from '@/contexts/ToastContext';
+import { Mail } from 'lucide-react';
 
 export default function ForgotPasswordPage() {
     const [isLoading, setIsLoading] = useState(false);
@@ -56,7 +57,9 @@ export default function ForgotPasswordPage() {
                     <CardContent className="space-y-4">
                         {emailSent ? (
                             <div className="text-center py-8">
-                                <div className="text-6xl mb-4">📧</div>
+                                <div className="flex justify-center mb-4">
+                                    <Mail className="h-16 w-16 text-primary" />
+                                </div>
                                 <h3 className="text-xl font-semibold mb-2">Kiểm tra email của bạn!</h3>
                                 <p className="text-muted-foreground mb-4">
                                     Chúng tôi đã gửi link đặt lại mật khẩu đến email của bạn.

@@ -6,6 +6,7 @@ import { Button } from '@/components/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/Card';
 import { DEFAULT_LANDING_PAGE_SECTIONS, DEFAULT_ABOUT_PAGE_SECTIONS, DEFAULT_INSTRUCTORS_PAGE_SECTIONS } from '@/lib/defaultContent';
 import { useToast } from '@/contexts/ToastContext';
+import { useConfirm } from '@/components/ConfirmDialog';
 
 interface CmsResponse {
     [key: string]: string;
@@ -111,6 +112,7 @@ const SECTION_TEMPLATES: Record<string, any> = {
 
 export default function AdminContentPage() {
     const { addToast } = useToast();
+    const confirm = useConfirm();
     const [activeTab, setActiveTab] = useState<'home' | 'about' | 'instructors'>('home');
     const [jsonContent, setJsonContent] = useState('');
     const [loading, setLoading] = useState(false);
@@ -132,7 +134,15 @@ export default function AdminContentPage() {
             } catch (e) {
                 // Heuristic: Check for duplicate object copy-paste error (e.g. }{ or } {)
                 if (contentToSave.match(/}\s*{/)) {
-                    if (confirm('JSON appears to be duplicated (two objects found). Do you want to automatically fix it by keeping only the first one?')) {
+                    const confirmed = await confirm({
+                        title: 'Duplicate JSON Objects',
+                        message: 'JSON appears to be duplicated (two objects found). Do you want to automatically fix it by keeping only the first one?',
+                        variant: 'warning',
+                        confirmText: 'Fix Automatically',
+                        cancelText: 'Cancel'
+                    });
+
+                    if (confirmed) {
                         const parts = contentToSave.split(/}\s*{/);
                         contentToSave = parts[0] + '}';
                         try {
@@ -194,8 +204,16 @@ export default function AdminContentPage() {
         }
     };
 
-    const handleReset = () => {
-        if (confirm('Are you sure?')) {
+    const handleReset = async () => {
+        const confirmed = await confirm({
+            title: 'Reset Default Content?',
+            message: 'Are you sure you want to reset the content to default? This action cannot be undone.',
+            variant: 'warning',
+            confirmText: 'Reset',
+            cancelText: 'Cancel'
+        });
+
+        if (confirmed) {
             setJsonContent(JSON.stringify(getDefaultContent(activeTab), null, 2));
         }
     };
@@ -259,8 +277,15 @@ export default function AdminContentPage() {
                                         }
                                     };
 
-                                    const deleteSection = (index: number) => {
-                                        if (!confirm('Are you sure you want to remove this section?')) return;
+                                    const deleteSection = async (index: number) => {
+                                        const confirmed = await confirm({
+                                            title: 'Remove Section?',
+                                            message: 'Are you sure you want to remove this section?',
+                                            variant: 'danger',
+                                            confirmText: 'Remove',
+                                            cancelText: 'Cancel'
+                                        });
+                                        if (!confirmed) return;
                                         const newSections = [...sections];
                                         newSections.splice(index, 1);
                                         setJsonContent(JSON.stringify(newSections, null, 2));

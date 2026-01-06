@@ -5,6 +5,7 @@ import { api } from '@/lib/api';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/Card';
 import { Button } from '@/components/Button';
 import Link from 'next/link';
+import { Info, CircleCheck } from 'lucide-react';
 
 export default function OrderPage({ params }: { params: Promise<{ code: string }> }) {
     const { code } = use(params);
@@ -56,7 +57,9 @@ export default function OrderPage({ params }: { params: Promise<{ code: string }
         return (
             <div className="container py-20 text-center">
                 <div className="mx-auto max-w-md rounded-xl border bg-card p-8 shadow-lg">
-                    <div className="mb-6 text-6xl">ℹ️</div>
+                    <div className="flex justify-center mb-6">
+                        <Info className="h-16 w-16 text-blue-500" />
+                    </div>
                     <h1 className="text-2xl font-bold mb-2">Khóa học miễn phí</h1>
                     <p className="text-muted-foreground mb-6">Khóa học này hoàn toàn miễn phí. Bạn không cần thanh toán.</p>
                     <Link href="/my-learning">
@@ -71,7 +74,9 @@ export default function OrderPage({ params }: { params: Promise<{ code: string }
         return (
             <div className="container py-20 text-center">
                 <div className="mx-auto max-w-md rounded-xl border bg-card p-8 shadow-lg">
-                    <div className="mb-6 text-6xl">🎉</div>
+                    <div className="flex justify-center mb-6">
+                        <CircleCheck className="h-16 w-16 text-green-500" />
+                    </div>
                     <h1 className="text-2xl font-bold mb-2">Thanh toán thành công!</h1>
                     <p className="text-muted-foreground mb-6">Bạn đã đăng ký thành công khóa học.</p>
                     <Link href="/dashboard">

@@ -7,6 +7,7 @@ import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/Card';
 import { useToast } from '@/contexts/ToastContext';
+import { useConfirm } from '@/components/ConfirmDialog';
 import { ChevronDown, ChevronUp, Paperclip, Eye } from 'lucide-react';
 import { Switch } from '@/components/Switch';
 
@@ -14,6 +15,7 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: strin
     const { id } = use(params);
     const router = useRouter();
     const { addToast } = useToast();
+    const confirm = useConfirm();
     const [loading, setLoading] = useState(true);
     const [course, setCourse] = useState<any>(null);
     const [lessons, setLessons] = useState<any[]>([]);
@@ -137,7 +139,14 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: strin
     };
 
     const handleDeleteLesson = async (lessonId: string) => {
-        if (!confirm('Xóa bài học này?')) return;
+        const confirmed = await confirm({
+            title: 'Delete Lesson?',
+            message: 'Are you sure you want to delete this lesson?',
+            variant: 'danger',
+            confirmText: 'Delete',
+            cancelText: 'Cancel'
+        });
+        if (!confirmed) return;
         try {
             await api.admin.courses.deleteLesson(lessonId);
             setLessons(lessons.filter(l => l.id !== lessonId));
