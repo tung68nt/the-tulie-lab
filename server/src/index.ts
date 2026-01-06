@@ -27,6 +27,8 @@ app.use(cors({
       process.env.CLIENT_URL,
       'https://thelab.tulie.vn',
       'https://www.thelab.tulie.vn',
+      'https://the-tulie-lab.vercel.app',
+      'https://beta.thelab.tulie.vn',
       'http://localhost:3000',
       'http://127.0.0.1:3000'
     ];
