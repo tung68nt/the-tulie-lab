@@ -76,7 +76,7 @@ export const getCourseById = async (id: string) => {
 
 export const createCourse = async (data: any) => {
     // Filter allowed fields
-    const validFields = ['title', 'slug', 'description', 'price', 'isPublished', 'instructorId', 'categoryId', 'thumbnail', 'introVideoUrl', 'learningOutcomes'];
+    const validFields = ['title', 'slug', 'description', 'price', 'isPublished', 'instructorId', 'categoryId', 'thumbnail', 'introVideoUrl', 'learningOutcomes', 'deploymentStatus'];
     const createData: any = {};
 
     for (const key of Object.keys(data)) {
@@ -124,7 +124,7 @@ export const addLesson = async (courseId: string, data: {
 
 export const updateCourse = async (id: string, data: any) => {
     // Filter out fields that don't match the Prisma schema (e.g. level)
-    const validFields = ['title', 'slug', 'description', 'price', 'isPublished', 'instructorId', 'categoryId', 'thumbnail', 'introVideoUrl', 'learningOutcomes'];
+    const validFields = ['title', 'slug', 'description', 'price', 'isPublished', 'instructorId', 'categoryId', 'thumbnail', 'introVideoUrl', 'learningOutcomes', 'deploymentStatus'];
     const filteredData: any = {};
 
     for (const key of Object.keys(data)) {
@@ -333,5 +333,17 @@ export const markLessonUncomplete = async (lessonId: string, userId: string) => 
             isCompleted: false,
             updatedAt: new Date()
         }
+    });
+};
+
+export const registerInterest = async (data: {
+    courseId: string;
+    email: string;
+    name: string;
+    phone?: string;
+    message?: string;
+}) => {
+    return prisma.courseRegistration.create({
+        data
     });
 };

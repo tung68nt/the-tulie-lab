@@ -37,6 +37,9 @@ router.get('/:id/progress', authenticate, CourseController.getCourseProgress);
 // Course creation (no dynamic param)
 router.post('/', authenticate, authorize([Role.ADMIN]), CourseController.createCourse);
 
+// Register interest for coming soon course
+router.post('/:courseId/register-interest', CourseController.handleRegisterInterest);
+
 // Public course by slug - MUST BE LAST
 router.get('/:slug', CourseController.getCourse);
 

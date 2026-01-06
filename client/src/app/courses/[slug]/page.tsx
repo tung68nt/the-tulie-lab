@@ -2,6 +2,7 @@
 
 import { useEffect, useState, use } from 'react';
 import { Button } from '@/components/Button';
+import { Input } from '@/components/Input';
 import { api } from '@/lib/api';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -72,6 +73,26 @@ export default function CoursePage({ params }: { params: Promise<{ slug: string 
     }, [slug]);
 
     const [isPurchasing, setIsPurchasing] = useState(false);
+    const [regForm, setRegForm] = useState({ name: '', email: '', phone: '', message: '' });
+    const [regLoading, setRegLoading] = useState(false);
+
+    const handleRegisterInterest = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!regForm.email || !regForm.name) {
+            addToast('Vui lòng nhập tên và email', 'error');
+            return;
+        }
+        setRegLoading(true);
+        try {
+            await api.post(`/courses/${course.id}/register-interest`, regForm);
+            addToast('Đăng ký nhận thông tin thành công! Chúng tôi sẽ liên hệ sớm.', 'success');
+            setRegForm({ name: '', email: '', phone: '', message: '' });
+        } catch (error: any) {
+            addToast(error.message || 'Có lỗi xảy ra', 'error');
+        } finally {
+            setRegLoading(false);
+        }
+    };
 
     const handleBuyNow = async () => {
         if (!isLoggedIn) {
@@ -189,34 +210,78 @@ export default function CoursePage({ params }: { params: Promise<{ slug: string 
                                         </div>
                                     </div>
 
-                                    {!isEnrolled ? (
-                                        <Button
-                                            size="lg"
-                                            disabled={isPurchasing}
-                                            className="w-full font-bold text-lg shadow-xl mt-4 border-0 relative"
-                                            style={{ backgroundColor: 'white', color: 'black' }}
-                                            onClick={handleBuyNow}
-                                        >
-                                            {isPurchasing ? (
-                                                <div className="absolute inset-0 flex items-center justify-center">
-                                                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-black border-t-transparent"></div>
-                                                </div>
-                                            ) : (
-                                                course.price === 0 ? 'Đăng ký miễn phí' : 'Đăng ký ngay'
-                                            )}
-                                        </Button>
-                                    ) : (
-                                        <Link href={`/learn/${course.slug}/${course.lessons?.[0]?.slug || ''}`}>
+                                    {(!course.deploymentStatus || course.deploymentStatus === 'RELEASED') ? (
+                                        !isEnrolled ? (
                                             <Button
                                                 size="lg"
-                                                className="w-full font-bold text-lg shadow-xl mt-4 border-0"
+                                                disabled={isPurchasing}
+                                                className="w-full font-bold text-lg shadow-xl mt-4 border-0 relative"
                                                 style={{ backgroundColor: 'white', color: 'black' }}
+                                                onClick={handleBuyNow}
                                             >
-                                                Vào học ngay
+                                                {isPurchasing ? (
+                                                    <div className="absolute inset-0 flex items-center justify-center">
+                                                        <div className="h-5 w-5 animate-spin rounded-full border-2 border-black border-t-transparent"></div>
+                                                    </div>
+                                                ) : (
+                                                    course.price === 0 ? 'Đăng ký miễn phí' : 'Đăng ký ngay'
+                                                )}
                                             </Button>
-                                        </Link>
+                                        ) : (
+                                            <Link href={`/learn/${course.slug}/${course.lessons?.[0]?.slug || ''}`}>
+                                                <Button
+                                                    size="lg"
+                                                    className="w-full font-bold text-lg shadow-xl mt-4 border-0"
+                                                    style={{ backgroundColor: 'white', color: 'black' }}
+                                                >
+                                                    Vào học ngay
+                                                </Button>
+                                            </Link>
+                                        )
+                                    ) : (
+                                        <div className="mt-6 p-4 bg-zinc-800 rounded-lg border border-zinc-700">
+                                            <h3 className="text-white font-bold mb-2">
+                                                {course.deploymentStatus === 'COMING_SOON' ? 'Sắp ra mắt' : 'Đang cập nhật'}
+                                            </h3>
+                                            <p className="text-sm text-zinc-400 mb-4">
+                                                Để lại thông tin để nhận thông báo ưu đãi khi khóa học ra mắt.
+                                            </p>
+                                            <form onSubmit={handleRegisterInterest} className="space-y-3">
+                                                <Input
+                                                    placeholder="Họ và tên"
+                                                    value={regForm.name}
+                                                    onChange={e => setRegForm({ ...regForm, name: e.target.value })}
+                                                    required
+                                                    className="bg-zinc-900 border-zinc-700 text-white placeholder:text-zinc-500"
+                                                />
+                                                <Input
+                                                    type="email"
+                                                    placeholder="Email nhận thông tin"
+                                                    value={regForm.email}
+                                                    onChange={e => setRegForm({ ...regForm, email: e.target.value })}
+                                                    required
+                                                    className="bg-zinc-900 border-zinc-700 text-white placeholder:text-zinc-500"
+                                                />
+                                                <Input
+                                                    placeholder="Số điện thoại (Tùy chọn)"
+                                                    value={regForm.phone}
+                                                    onChange={e => setRegForm({ ...regForm, phone: e.target.value })}
+                                                    className="bg-zinc-900 border-zinc-700 text-white placeholder:text-zinc-500"
+                                                />
+                                                <Button
+                                                    type="submit"
+                                                    disabled={regLoading}
+                                                    className="w-full font-bold"
+                                                    variant="default"
+                                                >
+                                                    {regLoading ? 'Đang gửi...' : 'Nhận thông tin'}
+                                                </Button>
+                                            </form>
+                                        </div>
                                     )}
-                                    <p className="text-center text-xs text-zinc-500 mt-3">Hoàn tiền trong 30 ngày nếu không hài lòng</p>
+                                    {(!course.deploymentStatus || course.deploymentStatus === 'RELEASED') && (
+                                        <p className="text-center text-xs text-zinc-500 mt-3">Hoàn tiền trong 30 ngày nếu không hài lòng</p>
+                                    )}
                                 </div>
                             </div>
                         </div>

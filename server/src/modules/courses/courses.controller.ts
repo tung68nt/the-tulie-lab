@@ -228,3 +228,26 @@ export const markLessonUncomplete = async (req: AuthRequest, res: Response) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const handleRegisterInterest = async (req: Request, res: Response) => {
+    try {
+        const { courseId } = req.params as { courseId: string };
+        const { email, name, phone, message } = req.body;
+
+        if (!email || !name) {
+            return res.status(400).json({ message: 'Email and Name are required' });
+        }
+
+        const registration = await CourseService.registerInterest({
+            courseId,
+            email,
+            name,
+            phone,
+            message
+        });
+
+        res.status(201).json({ success: true, message: 'Registration successful' });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};

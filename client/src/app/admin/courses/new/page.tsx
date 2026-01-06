@@ -25,7 +25,8 @@ export default function CreateCoursePage() {
         instructorId: '',
         thumbnail: '',
         introVideoUrl: '',
-        learningOutcomes: ''
+        learningOutcomes: '',
+        deploymentStatus: 'RELEASED'
     });
 
     useEffect(() => {
@@ -166,7 +167,7 @@ export default function CreateCoursePage() {
                                 />
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium">Học phí (VNĐ)</label>
                                     <Input
@@ -195,6 +196,20 @@ export default function CreateCoursePage() {
                                                 {formData.isPublished ? 'Đã xuất bản' : 'Nháp'}
                                             </span>
                                         </label>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Tình trạng ra mắt</label>
+                                    <div className="relative">
+                                        <select
+                                            value={formData.deploymentStatus}
+                                            onChange={e => setFormData({ ...formData, deploymentStatus: e.target.value })}
+                                            className="flex h-10 w-full appearance-none rounded-md border border-input bg-background text-foreground px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring pr-8"
+                                        >
+                                            <option value="RELEASED">Đã ra mắt</option>
+                                            <option value="COMING_SOON">Sắp ra mắt (Coming Soon)</option>
+                                            <option value="UPDATING">Đang cập nhật (Updating)</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>

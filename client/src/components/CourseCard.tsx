@@ -8,9 +8,10 @@ interface CourseCardProps {
     description: string;
     price: number;
     thumbnail?: string;
+    deploymentStatus?: 'RELEASED' | 'COMING_SOON' | 'UPDATING';
 }
 
-export function CourseCard({ title, slug, description, price, thumbnail }: CourseCardProps) {
+export function CourseCard({ title, slug, description, price, thumbnail, deploymentStatus = 'RELEASED' }: CourseCardProps) {
     return (
         <Link href={`/courses/${slug}`} className="group block h-full">
             <Card className="flex h-full flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-zinc-800">
@@ -26,9 +27,19 @@ export function CourseCard({ title, slug, description, price, thumbnail }: Cours
                             <span className="text-4xl text-zinc-300">—</span>
                         </div>
                     )}
-                    {price === 0 && (
+                    {price === 0 && deploymentStatus === 'RELEASED' && (
                         <div className="absolute right-3 top-3 rounded-full bg-foreground px-3 py-1 text-xs font-bold text-background backdrop-blur-sm">
                             MIỄN PHÍ
+                        </div>
+                    )}
+                    {deploymentStatus === 'COMING_SOON' && (
+                        <div className="absolute left-3 top-3 rounded-full bg-blue-600 px-3 py-1 text-xs font-bold text-white shadow-lg">
+                            SẮP RA MẮT
+                        </div>
+                    )}
+                    {deploymentStatus === 'UPDATING' && (
+                        <div className="absolute left-3 top-3 rounded-full bg-amber-600 px-3 py-1 text-xs font-bold text-white shadow-lg">
+                            ĐANG CẬP NHẬT
                         </div>
                     )}
                 </div>

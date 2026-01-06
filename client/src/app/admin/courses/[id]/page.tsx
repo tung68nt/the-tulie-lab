@@ -34,7 +34,8 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: strin
         level: 'ALL',
         thumbnail: '',
         introVideoUrl: '',
-        learningOutcomes: ''
+        learningOutcomes: '',
+        deploymentStatus: 'RELEASED'
     });
 
     const [newLesson, setNewLesson] = useState({
@@ -80,7 +81,8 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: strin
                         level: fullDetails.level || 'ALL',
                         thumbnail: fullDetails.thumbnail || '',
                         introVideoUrl: fullDetails.introVideoUrl || '',
-                        learningOutcomes: fullDetails.learningOutcomes || ''
+                        learningOutcomes: fullDetails.learningOutcomes || '',
+                        deploymentStatus: fullDetails.deploymentStatus || 'RELEASED'
                     });
                     // Set next position
                     setNewLesson(prev => ({ ...prev, position: (fullDetails.lessons?.length || 0) + 1 }));
@@ -240,7 +242,7 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: strin
 
 
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium">Học phí (VNĐ)</label>
                                     <Input
@@ -264,6 +266,23 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: strin
                                                 {courseForm.isPublished ? 'Đã xuất bản' : 'Chưa xuất bản'}
                                             </span>
                                         </label>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Tình trạng ra mắt</label>
+                                    <div className="relative">
+                                        <select
+                                            value={courseForm.deploymentStatus}
+                                            onChange={e => setCourseForm({ ...courseForm, deploymentStatus: e.target.value })}
+                                            className="flex h-10 w-full appearance-none rounded-md border border-input bg-background text-foreground px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring pr-8"
+                                        >
+                                            <option value="RELEASED">Đã ra mắt</option>
+                                            <option value="COMING_SOON">Sắp ra mắt (Coming Soon)</option>
+                                            <option value="UPDATING">Đang cập nhật (Updating)</option>
+                                        </select>
+                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-muted-foreground">
+                                            <ChevronDown className="h-4 w-4" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
