@@ -38,12 +38,21 @@ export default function AdminWebhooksPage() {
     const fetchBankConfig = async () => {
         try {
             const settings: any = await api.admin.settings.get();
+            const syntax = settings.payment_transfer_syntax || '';
+            // Extract prefix (everything before {{code}})
+            const prefix = syntax.replace('{{code}}', '').trim();
+
             setBankConfig({
                 bank_name: settings.bank_name || '',
                 bank_account_no: settings.bank_account_no || '',
                 bank_account_name: settings.bank_account_name || '',
-                payment_transfer_syntax: settings.payment_transfer_syntax || ''
+                payment_transfer_syntax: syntax
             });
+
+            // Pre-fill QR description with the prefix
+            if (prefix) {
+                setQrDescription(prefix);
+            }
         } catch (e) {
             console.error('Failed to load bank config', e);
         }
