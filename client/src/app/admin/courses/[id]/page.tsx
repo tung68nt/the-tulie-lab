@@ -36,7 +36,8 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: strin
         thumbnail: '',
         introVideoUrl: '',
         learningOutcomes: '',
-        deploymentStatus: 'RELEASED'
+        deploymentStatus: 'RELEASED',
+        tag: 'NONE'
     });
 
     const [newLesson, setNewLesson] = useState({
@@ -83,7 +84,8 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: strin
                         thumbnail: fullDetails.thumbnail || '',
                         introVideoUrl: fullDetails.introVideoUrl || '',
                         learningOutcomes: fullDetails.learningOutcomes || '',
-                        deploymentStatus: fullDetails.deploymentStatus || 'RELEASED'
+                        deploymentStatus: fullDetails.deploymentStatus || 'RELEASED',
+                        tag: fullDetails.tag || 'NONE'
                     });
                     // Set next position
                     setNewLesson(prev => ({ ...prev, position: (fullDetails.lessons?.length || 0) + 1 }));
@@ -285,7 +287,7 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: strin
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <label htmlFor="categoryId" className="text-sm font-medium">Danh mục</label>
                                     <div className="relative">
@@ -295,6 +297,22 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: strin
                                             options={[
                                                 { value: '', label: '-- Chưa phân loại --' },
                                                 ...categories.map(c => ({ value: c.id, label: c.name }))
+                                            ]}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Nhãn nổi bật (Tag)</label>
+                                    <div className="relative">
+                                        <Select
+                                            value={courseForm.tag}
+                                            onChange={(val) => setCourseForm({ ...courseForm, tag: val })}
+                                            options={[
+                                                { value: 'NONE', label: '-- Không --' },
+                                                { value: 'BEST_SELLER', label: 'Best Seller' },
+                                                { value: 'HOT', label: 'Hot' },
+                                                { value: 'NEW', label: 'Mới (New)' },
+                                                { value: 'DISCOUNT', label: 'Giảm giá (Discount)' }
                                             ]}
                                         />
                                     </div>

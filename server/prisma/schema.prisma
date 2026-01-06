@@ -57,6 +57,15 @@ enum CourseDeploymentStatus {
   UPDATING
 }
 
+
+enum CourseTag {
+  NONE
+  BEST_SELLER
+  HOT
+  NEW
+  DISCOUNT
+}
+
 model Course {
   id          String   @id @default(uuid())
   title       String
@@ -66,6 +75,7 @@ model Course {
   price       Int      @default(0) // Stored in smallest currency unit (e.g. VND)
   isPublished Boolean  @default(false)
   deploymentStatus CourseDeploymentStatus @default(RELEASED)
+  tag         CourseTag              @default(NONE)
   
   registrations CourseRegistration[]
   introVideoUrl String?

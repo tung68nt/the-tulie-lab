@@ -27,7 +27,8 @@ export default function CreateCoursePage() {
         thumbnail: '',
         introVideoUrl: '',
         learningOutcomes: '',
-        deploymentStatus: 'RELEASED'
+        deploymentStatus: 'RELEASED',
+        tag: 'NONE'
     });
 
     useEffect(() => {
@@ -168,7 +169,7 @@ export default function CreateCoursePage() {
                                 />
                             </div>
 
-                            <div className="grid grid-cols-3 gap-4">
+                            <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium">Học phí (VNĐ)</label>
                                     <Input
@@ -209,6 +210,22 @@ export default function CreateCoursePage() {
                                                 { value: 'RELEASED', label: 'Đã ra mắt' },
                                                 { value: 'COMING_SOON', label: 'Sắp ra mắt (Coming Soon)' },
                                                 { value: 'UPDATING', label: 'Đang cập nhật (Updating)' }
+                                            ]}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Nhãn nổi bật (Tag)</label>
+                                    <div className="relative">
+                                        <Select
+                                            value={formData.tag}
+                                            onChange={(val) => setFormData({ ...formData, tag: val })}
+                                            options={[
+                                                { value: 'NONE', label: '-- Không --' },
+                                                { value: 'BEST_SELLER', label: 'Best Seller' },
+                                                { value: 'HOT', label: 'Hot' },
+                                                { value: 'NEW', label: 'Mới (New)' },
+                                                { value: 'DISCOUNT', label: 'Giảm giá (Discount)' }
                                             ]}
                                         />
                                     </div>

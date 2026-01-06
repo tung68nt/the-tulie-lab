@@ -9,9 +9,10 @@ interface CourseCardProps {
     price: number;
     thumbnail?: string;
     deploymentStatus?: 'RELEASED' | 'COMING_SOON' | 'UPDATING';
+    tag?: 'NONE' | 'BEST_SELLER' | 'HOT' | 'NEW' | 'DISCOUNT';
 }
 
-export function CourseCard({ title, slug, description, price, thumbnail, deploymentStatus = 'RELEASED' }: CourseCardProps) {
+export function CourseCard({ title, slug, description, price, thumbnail, deploymentStatus = 'RELEASED', tag = 'NONE' }: CourseCardProps) {
     return (
         <Link href={`/courses/${slug}`} className="group block h-full">
             <Card className="flex h-full flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-zinc-800">
@@ -37,6 +38,14 @@ export function CourseCard({ title, slug, description, price, thumbnail, deploym
                             <span className="border border-white/80 bg-black/30 px-6 py-2.5 text-sm font-bold tracking-wider text-white backdrop-blur-md">
                                 {deploymentStatus === 'COMING_SOON' ? 'SẮP RA MẮT' : 'ĐANG CẬP NHẬT'}
                             </span>
+                        </div>
+                    )}
+                    {tag && tag !== 'NONE' && deploymentStatus === 'RELEASED' && (
+                        <div className="absolute left-3 top-3 rounded-full bg-background/80 px-3 py-1 text-xs font-bold text-foreground border border-border backdrop-blur-md shadow-sm">
+                            {tag === 'BEST_SELLER' && 'BEST SELLER'}
+                            {tag === 'HOT' && 'HOT'}
+                            {tag === 'NEW' && 'NEW'}
+                            {tag === 'DISCOUNT' && 'GIẢM GIÁ'}
                         </div>
                     )}
                 </div>

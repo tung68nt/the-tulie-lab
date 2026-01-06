@@ -138,7 +138,9 @@ export default function CoursePage({ params }: { params: Promise<{ slug: string 
                     <div className="grid gap-12 md:grid-cols-2 lg:gap-20">
                         <div className="space-y-6">
                             <div className="inline-flex items-center rounded-full border border-zinc-800 bg-zinc-900/50 px-3 py-1 text-sm font-medium text-zinc-400">
-                                Workshop Chính thức
+                                {course.deploymentStatus === 'COMING_SOON' ? 'Workshop Sắp ra mắt'
+                                    : course.deploymentStatus === 'UPDATING' ? 'Workshop Đang nâng cấp'
+                                        : 'Workshop Chính thức'}
                             </div>
                             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
                                 {course.title}
