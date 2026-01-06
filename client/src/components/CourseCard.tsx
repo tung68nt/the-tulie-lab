@@ -45,7 +45,7 @@ export function CourseCard({ title, slug, description, price, thumbnail, deploym
                         </div>
                     )}
                     {tag && tag !== 'NONE' && deploymentStatus === 'RELEASED' && (
-                        <div className="absolute left-3 top-3 rounded-full bg-background/80 px-3 py-1 text-xs font-bold text-foreground border border-border backdrop-blur-md shadow-sm">
+                        <div className="absolute left-3 top-3 rounded-full bg-foreground px-3 py-1 text-xs font-bold text-background backdrop-blur-sm">
                             {tag === 'BEST_SELLER' && 'BEST SELLER'}
                             {tag === 'HOT' && 'HOT'}
                             {tag === 'NEW' && 'NEW'}
