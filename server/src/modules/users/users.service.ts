@@ -10,6 +10,9 @@ export const getUserById = async (id: string) => {
                 }
             },
             orders: {
+                include: {
+                    courses: true
+                },
                 orderBy: {
                     createdAt: 'desc'
                 }
@@ -17,6 +20,87 @@ export const getUserById = async (id: string) => {
         }
     });
 };
+
+// Enhanced version for admin with activity logs
+export const getUserDetailsForAdmin = async (id: string) => {
+    const user = await prisma.user.findUnique({
+        where: { id },
+        include: {
+            enrollments: {
+                include: {
+                    course: {
+                        select: {
+                            id: true,
+                            title: true,
+                            slug: true,
+                            thumbnail: true
+                        }
+                    }
+                },
+                orderBy: { createdAt: 'desc' }
+            },
+            orders: {
+                include: {
+                    courses: {
+                        select: {
+                            id: true,
+                            title: true
+                        }
+                    }
+                },
+                orderBy: { createdAt: 'desc' }
+            },
+            progress: {
+                select: {
+                    lessonId: true,
+                    isCompleted: true,
+                    updatedAt: true
+                },
+                orderBy: { updatedAt: 'desc' },
+                take: 20
+            }
+        }
+    });
+
+    if (!user) return null;
+
+    // Get activity logs for this user
+    const activities = await prisma.activityLog.findMany({
+        where: { userId: id },
+        orderBy: { createdAt: 'desc' },
+        take: 50
+    });
+
+    // Get last login from activity logs
+    const lastLogin = await prisma.activityLog.findFirst({
+        where: {
+            userId: id,
+            action: 'login'
+        },
+        orderBy: { createdAt: 'desc' }
+    });
+
+    // Calculate pending order duration
+    const pendingOrders = user.orders.filter((o: any) => o.status === 'PENDING').map((o: any) => ({
+        ...o,
+        pendingDays: Math.floor((Date.now() - new Date(o.createdAt).getTime()) / (1000 * 60 * 60 * 24))
+    }));
+
+    return {
+        ...user,
+        activities,
+        lastLoginAt: lastLogin?.createdAt || null,
+        lastLoginIp: lastLogin?.ipAddress || null,
+        pendingOrders,
+        stats: {
+            totalEnrollments: user.enrollments.length,
+            totalOrders: user.orders.length,
+            totalPaid: user.orders.filter((o: any) => o.status === 'PAID').reduce((sum: number, o: any) => sum + o.amount, 0),
+            completedLessons: user.progress.filter((p: any) => p.isCompleted).length
+        }
+    };
+};
+
 
 export const updateUser = async (id: string, data: any) => {
     return prisma.user.update({

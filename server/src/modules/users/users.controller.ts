@@ -79,7 +79,8 @@ export const getUser = async (req: Request, res: Response) => {
         if (!id) {
             return res.status(400).json({ message: 'Missing user ID' });
         }
-        const user = await UserService.getUserById(id);
+        // Use enhanced function for admin view with activities and stats
+        const user = await UserService.getUserDetailsForAdmin(id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
