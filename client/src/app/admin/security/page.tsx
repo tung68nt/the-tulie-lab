@@ -139,11 +139,11 @@ export default function AdminSecurityPage() {
                                     <table className="w-full text-sm">
                                         <thead>
                                             <tr className="border-b text-left">
-                                                <th className="py-2 px-2 font-semibold">Hành động</th>
-                                                <th className="py-2 px-2 font-semibold">Chi tiết</th>
-                                                <th className="py-2 px-2 font-semibold">IP</th>
-                                                <th className="py-2 px-2 font-semibold">User</th>
-                                                <th className="py-2 px-2 font-semibold">Thời gian</th>
+                                                <th className="py-2 px-2 font-semibold whitespace-nowrap">Hành động</th>
+                                                <th className="py-2 px-2 font-semibold whitespace-nowrap">Chi tiết</th>
+                                                <th className="py-2 px-2 font-semibold whitespace-nowrap">IP</th>
+                                                <th className="py-2 px-2 font-semibold whitespace-nowrap">User</th>
+                                                <th className="py-2 px-2 font-semibold whitespace-nowrap">Thời gian</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -222,12 +222,12 @@ export default function AdminSecurityPage() {
                                     <table className="w-full text-sm">
                                         <thead>
                                             <tr className="border-b text-left">
-                                                <th className="py-2 px-2 font-semibold">Hành động</th>
-                                                <th className="py-2 px-2 font-semibold">Đường dẫn</th>
-                                                <th className="py-2 px-2 font-semibold">Thiết bị</th>
-                                                <th className="py-2 px-2 font-semibold">IP / Địa điểm</th>
-                                                <th className="py-2 px-2 font-semibold">User</th>
-                                                <th className="py-2 px-2 font-semibold">Thời gian</th>
+                                                <th className="py-2 px-2 font-semibold whitespace-nowrap">Hành động</th>
+                                                <th className="py-2 px-2 font-semibold whitespace-nowrap">Đường dẫn</th>
+                                                <th className="py-2 px-2 font-semibold whitespace-nowrap">Thiết bị</th>
+                                                <th className="py-2 px-2 font-semibold whitespace-nowrap">IP / Địa điểm</th>
+                                                <th className="py-2 px-2 font-semibold whitespace-nowrap">User</th>
+                                                <th className="py-2 px-2 font-semibold whitespace-nowrap">Thời gian</th>
                                             </tr>
                                         </thead>
                                         <tbody>
