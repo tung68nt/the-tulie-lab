@@ -35,7 +35,11 @@ export function CourseCard({ title, slug, description, price, thumbnail, deploym
                     )}
                     {(deploymentStatus === 'COMING_SOON' || deploymentStatus === 'UPDATING') && (
                         <div className="absolute inset-0 z-10 flex items-center justify-center bg-zinc-950/70 backdrop-blur-[1px] transition-colors group-hover:bg-zinc-950/60">
-                            <span className="border border-white/80 bg-black/30 px-6 py-2.5 text-sm font-bold tracking-wider text-white backdrop-blur-md">
+                            <span className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-black/30 px-5 py-2 text-sm font-bold tracking-wider text-white backdrop-blur-md">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                                </span>
                                 {deploymentStatus === 'COMING_SOON' ? 'Sắp ra mắt' : 'Đang nâng cấp'}
                             </span>
                         </div>

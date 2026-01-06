@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Button } from './Button';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { api } from '@/lib/api';
@@ -23,6 +24,7 @@ import { useConfirm } from '@/components/ConfirmDialog';
 export function Navbar() {
     const { addToast } = useToast();
     const confirm = useConfirm();
+    const pathname = usePathname();
     const [user, setUser] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
@@ -198,11 +200,18 @@ export function Navbar() {
 
                     {/* Desktop Navigation */}
                     <div className="mr-4 hidden md:flex items-center space-x-6 text-sm font-medium">
-                        {navLinks.map(link => (
-                            <Link key={link.href} href={link.href} className="transition-colors hover:text-primary">
-                                {link.label}
-                            </Link>
-                        ))}
+                        {navLinks.map(link => {
+                            const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+                            return (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    className={`transition-colors hover:text-foreground ${isActive ? 'text-foreground font-semibold' : 'text-foreground/60'}`}
+                                >
+                                    {link.label}
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     {/* Desktop Auth Section */}
@@ -347,16 +356,19 @@ export function Navbar() {
 
                     {/* Navigation Links & User Menu */}
                     <div className="flex-1 overflow-y-auto py-4 px-4 space-y-1 max-h-[70vh]">
-                        {navLinks.map(link => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className="block py-3 px-4 text-base font-medium hover:bg-muted rounded-md transition-colors"
-                                onClick={() => setMobileMenuOpen(false)}
-                            >
-                                {link.label}
-                            </Link>
-                        ))}
+                        {navLinks.map(link => {
+                            const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+                            return (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    className={`block py-3 px-4 text-base font-medium rounded-md transition-colors ${isActive ? 'bg-muted text-foreground font-semibold' : 'text-foreground/70 hover:bg-muted'}`}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    {link.label}
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     {/* Drawer Footer (Guest Only) */}
