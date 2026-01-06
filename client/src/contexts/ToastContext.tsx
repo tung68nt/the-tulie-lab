@@ -65,8 +65,9 @@ const ToastContainer = ({ toasts, removeToast }: { toasts: Toast[], removeToast:
             container = document.createElement('div');
             container.id = 'toast-portal-root';
             container.style.position = 'fixed';
-            container.style.top = '80px';
-            container.style.right = '20px';
+            container.style.top = '20px';
+            container.style.left = '50%';
+            container.style.transform = 'translateX(-50%)';
             container.style.zIndex = '999999';
             container.style.display = 'flex';
             container.style.flexDirection = 'column';
@@ -94,12 +95,12 @@ const ToastContainer = ({ toasts, removeToast }: { toasts: Toast[], removeToast:
                 <div
                     key={toast.id}
                     className={`
-                        pointer-events-auto rounded-lg px-4 py-3 shadow-xl transition-all duration-300 transform cursor-pointer border flex items-center gap-3 animate-in fade-in slide-in-from-right-5
-                        ${toast.type === 'success' ? 'bg-zinc-900 text-white border-zinc-800' : ''}
-                        ${toast.type === 'error' ? 'bg-red-600 text-white border-red-700' : ''}
-                        ${toast.type === 'info' ? 'bg-blue-600 text-white border-blue-700' : ''}
-                        ${toast.type === 'warning' ? 'bg-yellow-500 text-black border-yellow-600' : ''}
-                        ${!['success', 'error', 'info', 'warning'].includes(toast.type) ? 'bg-zinc-900 text-white' : ''}
+                        pointer-events-auto rounded-lg px-4 py-3 shadow-xl transition-all duration-300 transform cursor-pointer border flex items-center gap-3 animate-in fade-in zoom-in-95
+                    ${toast.type === 'success' ? 'bg-zinc-900 text-white border-zinc-800' : ''}
+                    ${toast.type === 'error' ? 'bg-red-600 text-white border-red-700' : ''}
+                    ${toast.type === 'info' ? 'bg-blue-600 text-white border-blue-700' : ''}
+                    ${toast.type === 'warning' ? 'bg-yellow-500 text-black border-yellow-600' : ''}
+                    ${!['success', 'error', 'info', 'warning'].includes(toast.type) ? 'bg-zinc-900 text-white' : ''}
                     `}
                     onClick={() => removeToast(toast.id)}
                     style={{ pointerEvents: 'auto' }}
