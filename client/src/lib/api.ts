@@ -167,6 +167,7 @@ export const api = {
             regenerateApiKey: () => request('/settings/api-key/regenerate', {
                 method: 'POST'
             }),
+            getEmailLogs: () => request('/settings/email-logs'),
         },
         blog: {
             create: (data: any) => request('/blog', {

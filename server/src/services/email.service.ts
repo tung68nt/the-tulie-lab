@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import prisma from '../config/prisma';
 
 // SMTP Configuration
 const transporter = nodemailer.createTransport({
@@ -10,6 +11,33 @@ const transporter = nodemailer.createTransport({
         pass: process.env.SMTP_PASS,
     },
 });
+
+// Helper to log email sends
+const logEmail = async (data: {
+    to: string;
+    subject: string;
+    type: string;
+    status: 'sent' | 'failed';
+    userId?: string;
+    orderId?: string;
+    error?: string;
+}) => {
+    try {
+        await prisma.emailLog.create({
+            data: {
+                to: data.to,
+                subject: data.subject,
+                type: data.type,
+                status: data.status,
+                userId: data.userId,
+                orderId: data.orderId,
+                error: data.error
+            }
+        });
+    } catch (e) {
+        console.error('Error logging email:', e);
+    }
+};
 
 // Email templates - Simple Black & White Style
 const emailTemplates = {
@@ -478,6 +506,8 @@ export const emailService = {
         accountName: string;
         transferContent: string;
         customMessage?: string;
+        userId?: string;
+        orderId?: string;
     }) {
         // Generate QR URL
         const qrUrl = `https://qr.sepay.vn/img?acc=${data.accountNo}&bank=${data.bankName}&amount=${data.amount}&des=${encodeURIComponent(data.transferContent)}`;
@@ -495,9 +525,32 @@ export const emailService = {
                 html: template.html,
             });
             console.log(`✅ Payment reminder email sent to ${data.to}`);
+
+            // Log successful email
+            await logEmail({
+                to: data.to,
+                subject: template.subject,
+                type: 'payment_reminder',
+                status: 'sent',
+                userId: data.userId,
+                orderId: data.orderId
+            });
+
             return true;
-        } catch (error) {
+        } catch (error: any) {
             console.error('❌ Error sending payment reminder email:', error);
+
+            // Log failed email
+            await logEmail({
+                to: data.to,
+                subject: template.subject,
+                type: 'payment_reminder',
+                status: 'failed',
+                userId: data.userId,
+                orderId: data.orderId,
+                error: error?.message
+            });
+
             return false;
         }
     },

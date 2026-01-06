@@ -16,4 +16,7 @@ router.put('/', authenticate, authorize([Role.ADMIN]), SettingsController.update
 router.get('/api-key', authenticate, authorize([Role.ADMIN]), SettingsController.getApiKey);
 router.post('/api-key/regenerate', authenticate, authorize([Role.ADMIN]), SettingsController.regenerateApiKey);
 
+// Email logs
+router.get('/email-logs', authenticate, authorize([Role.ADMIN]), SettingsController.getEmailLogs);
+
 export default router;

@@ -164,7 +164,9 @@ export const sendPaymentReminder = async (req: Request, res: Response) => {
             accountNo,
             accountName,
             transferContent,
-            customMessage
+            customMessage,
+            userId: order.userId,
+            orderId: order.id
         });
 
         if (success) {

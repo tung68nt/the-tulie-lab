@@ -409,3 +409,20 @@ model ActivityLog {
   metadata  String? 
   createdAt DateTime @default(now())
 }
+
+// ==========================================
+// EMAIL LOG
+// ==========================================
+
+model EmailLog {
+  id        String   @id @default(uuid())
+  to        String   // Recipient email
+  subject   String
+  type      String   // e.g. "payment_reminder", "welcome", "password_reset"
+  status    String   @default("sent") // "sent", "failed", "bounced"
+  userId    String?  // Optional link to user
+  orderId   String?  // Optional link to order
+  metadata  String?  // JSON string for additional data
+  error     String?  // Error message if failed
+  createdAt DateTime @default(now())
+}

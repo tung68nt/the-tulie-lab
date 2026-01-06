@@ -54,3 +54,16 @@ export const getApiKey = async (req: Request, res: Response) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const getEmailLogs = async (req: Request, res: Response) => {
+    try {
+        const prisma = require('../../config/prisma').default;
+        const logs = await prisma.emailLog.findMany({
+            orderBy: { createdAt: 'desc' },
+            take: 100
+        });
+        res.json(logs);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
