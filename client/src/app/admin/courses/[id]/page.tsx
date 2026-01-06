@@ -576,12 +576,14 @@ function LessonItem({ lesson, onDelete, onAddAttachment, onUpdateLesson }: {
     const [slug, setSlug] = useState(lesson.slug || '');
     const [chapter, setChapter] = useState(lesson.chapter || '');
     const [section, setSection] = useState(lesson.section || '');
+    const [content, setContent] = useState(lesson.content || '');
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [isEditingVideo, setIsEditingVideo] = useState(false);
     const [isEditingDuration, setIsEditingDuration] = useState(false);
     const [isEditingSlug, setIsEditingSlug] = useState(false);
     const [isEditingChapter, setIsEditingChapter] = useState(false);
     const [isEditingSection, setIsEditingSection] = useState(false);
+    const [isEditingContent, setIsEditingContent] = useState(false);
 
     const handleSaveTitle = () => {
         if (onUpdateLesson) {
@@ -623,6 +625,13 @@ function LessonItem({ lesson, onDelete, onAddAttachment, onUpdateLesson }: {
             onUpdateLesson(lesson.id, { section });
         }
         setIsEditingSection(false);
+    };
+
+    const handleSaveContent = () => {
+        if (onUpdateLesson) {
+            onUpdateLesson(lesson.id, { content });
+        }
+        setIsEditingContent(false);
     };
 
     return (
