@@ -30,11 +30,13 @@ RUN apk add --no-cache ffmpeg
 # Copy package files for production deps only
 COPY package*.json ./
 
+# Copy Prisma files and generate client (needed for postinstall script)
+COPY prisma ./prisma/
+
 # Install production dependencies only
 RUN npm ci --only=production
 
-# Copy Prisma files and generate client
-COPY prisma ./prisma/
+# Generate client explicitly (redundant if postinstall runs it, but safe)
 RUN npx prisma generate
 
 # Copy built files from builder
