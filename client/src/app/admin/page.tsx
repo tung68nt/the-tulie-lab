@@ -444,7 +444,11 @@ export default function AdminDashboardPage() {
                     <CardContent className="!p-6 flex flex-col items-center justify-center h-[120px] text-center">
                         <div className="text-sm text-muted-foreground">Tổng doanh thu</div>
                         <div className="text-2xl font-bold my-1">{formatCurrency(data.totalRevenue)}</div>
-                        <div className="text-xs text-muted-foreground">↑ 12% so với tháng trước</div>
+                        <div className="text-xs text-muted-foreground">
+                            {data.totalRevenue > 0
+                                ? `Tháng này: ${formatCurrency(data.monthlyRevenue)}`
+                                : 'Chưa có doanh thu'}
+                        </div>
                     </CardContent>
                 </Card>
                 <Card>
