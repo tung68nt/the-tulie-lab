@@ -112,25 +112,115 @@ export function VideoPlayer({ url, type, title, className = '' }: VideoPlayerPro
         );
     }
 
-    // Direct video (self-hosted or external)
-    const isExternalMp4 = videoType === 'EXTERNAL' && (url.endsWith('.mp4') || url.endsWith('.mov') || url.endsWith('.mkv'));
+    // Direct video (self-hosted or external) - with custom fullscreen
     const videoSource = url;
 
     return (
-        <div className={`relative ${className}`}>
-            <video
-                src={videoSource}
-                className="w-full h-full"
-                controls
-                controlsList="nodownload"
-                onContextMenu={(e) => e.preventDefault()}
-                onError={() => setError(true)}
-                title={title}
-            >
-                Your browser does not support video playback.
-            </video>
-            <Watermark />
+        <FullscreenVideoWrapper className={className} user={user}>
+            {(containerRef, isFullscreen, toggleFullscreen) => (
+                <>
+                    <video
+                        src={videoSource}
+                        className="w-full h-full"
+                        controls
+                        controlsList="nodownload nofullscreen"
+                        onContextMenu={(e) => e.preventDefault()}
+                        onError={() => setError(true)}
+                        title={title}
+                    >
+                        Your browser does not support video playback.
+                    </video>
+                    <FullscreenButton isFullscreen={isFullscreen} onClick={toggleFullscreen} />
+                </>
+            )}
+        </FullscreenVideoWrapper>
+    );
+}
+
+/**
+ * Fullscreen Video Wrapper - adds custom fullscreen with watermark support
+ */
+function FullscreenVideoWrapper({
+    children,
+    className = '',
+    user
+}: {
+    children: (containerRef: React.RefObject<HTMLDivElement | null>, isFullscreen: boolean, toggleFullscreen: () => void) => React.ReactNode;
+    className?: string;
+    user: any;
+}) {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
+    const toggleFullscreen = () => {
+        if (!containerRef.current) return;
+
+        if (!document.fullscreenElement) {
+            containerRef.current.requestFullscreen().then(() => {
+                setIsFullscreen(true);
+            }).catch(err => {
+                console.error('Error entering fullscreen:', err);
+            });
+        } else {
+            document.exitFullscreen().then(() => {
+                setIsFullscreen(false);
+            });
+        }
+    };
+
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    }, []);
+
+    const WrapperWatermark = () => {
+        if (!user) return null;
+        return (
+            <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden select-none">
+                <div className="animate-float opacity-20 text-white text-sm font-bold absolute top-4 left-4 whitespace-nowrap">
+                    {user.email} - {user.id.slice(0, 8)}
+                </div>
+                <div className="animate-float-delayed opacity-20 text-white text-sm font-bold absolute bottom-16 right-8 whitespace-nowrap">
+                    {user.email}
+                </div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-10 text-white text-xs font-mono pointer-events-none">
+                    {user.id}
+                </div>
+            </div>
+        );
+    };
+
+    return (
+        <div ref={containerRef} className={`relative bg-black ${className} ${isFullscreen ? 'w-screen h-screen' : ''}`}>
+            {children(containerRef, isFullscreen, toggleFullscreen)}
+            <WrapperWatermark />
         </div>
+    );
+}
+
+/**
+ * Custom Fullscreen Button
+ */
+function FullscreenButton({ isFullscreen, onClick }: { isFullscreen: boolean; onClick: () => void }) {
+    return (
+        <button
+            onClick={onClick}
+            className="absolute bottom-3 right-3 z-30 p-2 bg-black/50 hover:bg-black/70 rounded transition-colors"
+            title={isFullscreen ? 'Thoát toàn màn hình' : 'Toàn màn hình'}
+        >
+            {isFullscreen ? (
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            ) : (
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+                </svg>
+            )}
+        </button>
     );
 }
 
