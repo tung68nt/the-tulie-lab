@@ -178,17 +178,43 @@ function FullscreenVideoWrapper({
 
     const WrapperWatermark = () => {
         if (!user) return null;
+        const watermarkText = `${user.email} - ${user.id}`;
         return (
             <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden select-none">
-                <div className="animate-float opacity-20 text-white text-sm font-bold absolute top-4 left-4 whitespace-nowrap">
-                    {user.email} - {user.id.slice(0, 8)}
+                {/* Top left */}
+                <div className={`animate-float opacity-30 text-white font-bold absolute top-4 left-4 whitespace-nowrap ${isFullscreen ? 'text-lg' : 'text-sm'}`}>
+                    {watermarkText}
                 </div>
-                <div className="animate-float-delayed opacity-20 text-white text-sm font-bold absolute bottom-16 right-8 whitespace-nowrap">
+                {/* Top right */}
+                <div className={`animate-float-delayed opacity-25 text-white font-bold absolute top-4 right-4 whitespace-nowrap ${isFullscreen ? 'text-lg' : 'text-sm'}`}>
                     {user.email}
                 </div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-10 text-white text-xs font-mono pointer-events-none">
+                {/* Center */}
+                <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-15 text-white font-mono ${isFullscreen ? 'text-xl' : 'text-sm'}`}>
+                    {watermarkText}
+                </div>
+                {/* Bottom left */}
+                <div className={`animate-float opacity-25 text-white font-bold absolute bottom-16 left-8 whitespace-nowrap ${isFullscreen ? 'text-lg' : 'text-sm'}`}>
                     {user.id}
                 </div>
+                {/* Bottom right */}
+                <div className={`animate-float-delayed opacity-30 text-white font-bold absolute bottom-16 right-8 whitespace-nowrap ${isFullscreen ? 'text-lg' : 'text-sm'}`}>
+                    {watermarkText}
+                </div>
+                {/* Additional scattered watermarks for fullscreen */}
+                {isFullscreen && (
+                    <>
+                        <div className="opacity-20 text-white text-base font-bold absolute top-1/4 left-1/4 whitespace-nowrap">
+                            {user.email}
+                        </div>
+                        <div className="opacity-20 text-white text-base font-bold absolute top-3/4 right-1/4 whitespace-nowrap">
+                            {user.id}
+                        </div>
+                        <div className="opacity-15 text-white text-base font-mono absolute top-1/3 right-1/3 whitespace-nowrap">
+                            {watermarkText}
+                        </div>
+                    </>
+                )}
             </div>
         );
     };
@@ -208,7 +234,7 @@ function FullscreenButton({ isFullscreen, onClick }: { isFullscreen: boolean; on
     return (
         <button
             onClick={onClick}
-            className="absolute bottom-3 right-3 z-30 p-2 bg-black/50 hover:bg-black/70 rounded transition-colors"
+            className="absolute bottom-3 right-14 z-30 p-2 bg-black/50 hover:bg-black/70 rounded transition-colors"
             title={isFullscreen ? 'Thoát toàn màn hình' : 'Toàn màn hình'}
         >
             {isFullscreen ? (
@@ -330,17 +356,43 @@ function HLSPlayer({
     // Watermark component for HLS Player
     const HLSWatermark = () => {
         if (!user) return null;
+        const watermarkText = `${user.email} - ${user.id}`;
         return (
             <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden select-none">
-                <div className="animate-float opacity-20 text-white text-sm font-bold absolute top-4 left-4 whitespace-nowrap">
-                    {user.email} - {user.id.slice(0, 8)}
+                {/* Top left */}
+                <div className={`animate-float opacity-30 text-white font-bold absolute top-4 left-4 whitespace-nowrap ${isFullscreen ? 'text-lg' : 'text-sm'}`}>
+                    {watermarkText}
                 </div>
-                <div className="animate-float-delayed opacity-20 text-white text-sm font-bold absolute bottom-16 right-8 whitespace-nowrap">
+                {/* Top right */}
+                <div className={`animate-float-delayed opacity-25 text-white font-bold absolute top-4 right-4 whitespace-nowrap ${isFullscreen ? 'text-lg' : 'text-sm'}`}>
                     {user.email}
                 </div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-10 text-white text-xs font-mono pointer-events-none">
+                {/* Center */}
+                <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-15 text-white font-mono ${isFullscreen ? 'text-xl' : 'text-sm'}`}>
+                    {watermarkText}
+                </div>
+                {/* Bottom left */}
+                <div className={`animate-float opacity-25 text-white font-bold absolute bottom-16 left-8 whitespace-nowrap ${isFullscreen ? 'text-lg' : 'text-sm'}`}>
                     {user.id}
                 </div>
+                {/* Bottom right */}
+                <div className={`animate-float-delayed opacity-30 text-white font-bold absolute bottom-16 right-8 whitespace-nowrap ${isFullscreen ? 'text-lg' : 'text-sm'}`}>
+                    {watermarkText}
+                </div>
+                {/* Additional scattered watermarks for fullscreen */}
+                {isFullscreen && (
+                    <>
+                        <div className="opacity-20 text-white text-base font-bold absolute top-1/4 left-1/4 whitespace-nowrap">
+                            {user.email}
+                        </div>
+                        <div className="opacity-20 text-white text-base font-bold absolute top-3/4 right-1/4 whitespace-nowrap">
+                            {user.id}
+                        </div>
+                        <div className="opacity-15 text-white text-base font-mono absolute top-1/3 right-1/3 whitespace-nowrap">
+                            {watermarkText}
+                        </div>
+                    </>
+                )}
             </div>
         );
     };
@@ -365,7 +417,7 @@ function HLSPlayer({
             {/* Custom fullscreen button */}
             <button
                 onClick={toggleFullscreen}
-                className="absolute bottom-3 right-3 z-30 p-2 bg-black/50 hover:bg-black/70 rounded transition-colors"
+                className="absolute bottom-3 right-14 z-30 p-2 bg-black/50 hover:bg-black/70 rounded transition-colors"
                 title={isFullscreen ? 'Thoát toàn màn hình' : 'Toàn màn hình'}
             >
                 {isFullscreen ? (
