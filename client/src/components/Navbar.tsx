@@ -206,7 +206,7 @@ export function Navbar() {
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className={`transition-colors hover:text-foreground ${isActive ? 'text-foreground font-semibold' : 'text-foreground/60'}`}
+                                    className={`transition-colors hover:text-foreground ${isActive ? 'text-foreground font-semibold' : 'text-foreground/50'}`}
                                 >
                                     {link.label}
                                 </Link>
