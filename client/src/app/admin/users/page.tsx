@@ -232,7 +232,7 @@ export default function AdminUsersPage() {
 
                                         {/* Enroll Action */}
                                         <div className="pt-4 border-t">
-                                            <h4 className="font-semibold text-sm mb-3 text-muted-foreground uppercase tracking-wider">Kích hoạt workshop thủ công</h4>
+                                            <h4 className="font-semibold text-sm mb-3 text-muted-foreground">Kích hoạt workshop thủ công</h4>
                                             <div className="flex gap-2 items-center">
                                                 <select
                                                     className="border rounded-md px-3 py-2 text-sm flex-1 max-w-sm bg-background focus:outline-none focus:ring-1 focus:ring-foreground"
