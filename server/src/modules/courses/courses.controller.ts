@@ -104,6 +104,7 @@ export const updateCourse = async (req: Request, res: Response) => {
         const course = await CourseService.updateCourse(id, data);
         res.json(course);
     } catch (error: any) {
+        console.error('Update Course Error:', error);
         res.status(500).json({ message: error.message });
     }
 };

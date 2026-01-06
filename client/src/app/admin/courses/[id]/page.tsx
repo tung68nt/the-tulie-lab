@@ -197,7 +197,7 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: strin
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium">Học phí (VNĐ)</label>
-                                    <Input type="number" value={courseForm.price} onChange={e => setCourseForm({ ...courseForm, price: parseFloat(e.target.value) })} />
+                                    <Input type="number" value={courseForm.price} onChange={e => setCourseForm({ ...courseForm, price: parseFloat(e.target.value) || 0 })} />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium">Trạng thái</label>
@@ -357,7 +357,7 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: strin
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium">Thứ tự bài học</label>
-                                        <Input type="number" value={newLesson.position} onChange={e => setNewLesson({ ...newLesson, position: parseInt(e.target.value) })} />
+                                        <Input type="number" value={newLesson.position} onChange={e => setNewLesson({ ...newLesson, position: parseInt(e.target.value) || 0 })} />
                                     </div>
                                     <div className="flex items-end pb-2">
                                         <div className="flex items-center gap-3">
