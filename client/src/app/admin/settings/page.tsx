@@ -8,9 +8,11 @@ import { api } from '@/lib/api';
 import { useToast } from '@/contexts/ToastContext';
 import { Loader2, Upload } from 'lucide-react';
 import { Switch } from '@/components/Switch';
+import { useSettings } from '@/contexts/SettingsContext';
 
 export default function AdminSettingsPage() {
     const { addToast } = useToast();
+    const { updateSettings: globalUpdateSettings } = useSettings();
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(true);
     const [settings, setSettings] = useState<any>({});
@@ -40,6 +42,8 @@ export default function AdminSettingsPage() {
         setLoading(true);
         try {
             await api.admin.settings.update(settings);
+            // Refresh global settings context so navbar updates
+            await globalUpdateSettings();
             addToast("Cập nhật cài đặt thành công.", 'success');
         } catch (error: any) {
             addToast(error.message || "Không thể lưu cài đặt.", 'error');
@@ -59,9 +63,17 @@ export default function AdminSettingsPage() {
         setUploadingLogo(true);
         try {
             const result: any = await api.uploads.single(file);
-            handleChange('site_logo', result.file.url);
-            addToast('Logo đã được tải lên', 'success');
+            console.log('Upload result:', result); // Debug
+            // Handle different response structures
+            const url = result?.file?.url || result?.url || result?.data?.url;
+            if (url) {
+                handleChange('site_logo', url);
+                addToast('Logo đã được tải lên', 'success');
+            } else {
+                throw new Error('Không nhận được URL từ server');
+            }
         } catch (error: any) {
+            console.error('Upload error:', error);
             addToast(error.message || 'Tải logo thất bại', 'error');
         } finally {
             setUploadingLogo(false);
@@ -75,9 +87,16 @@ export default function AdminSettingsPage() {
         setUploadingFavicon(true);
         try {
             const result: any = await api.uploads.single(file);
-            handleChange('site_favicon', result.file.url);
-            addToast('Favicon đã được tải lên', 'success');
+            console.log('Favicon upload result:', result); // Debug
+            const url = result?.file?.url || result?.url || result?.data?.url;
+            if (url) {
+                handleChange('site_favicon', url);
+                addToast('Favicon đã được tải lên', 'success');
+            } else {
+                throw new Error('Không nhận được URL từ server');
+            }
         } catch (error: any) {
+            console.error('Favicon upload error:', error);
             addToast(error.message || 'Tải favicon thất bại', 'error');
         } finally {
             setUploadingFavicon(false);
