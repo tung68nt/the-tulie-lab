@@ -51,6 +51,12 @@ model User {
   notifications  UserNotification[]
 }
 
+enum CourseDeploymentStatus {
+  RELEASED
+  COMING_SOON
+  UPDATING
+}
+
 model Course {
   id          String   @id @default(uuid())
   title       String
@@ -59,6 +65,9 @@ model Course {
   thumbnail   String?
   price       Int      @default(0) // Stored in smallest currency unit (e.g. VND)
   isPublished Boolean  @default(false)
+  deploymentStatus CourseDeploymentStatus @default(RELEASED)
+  
+  registrations CourseRegistration[]
   introVideoUrl String?
   learningOutcomes String? @db.Text // JSON string or newline separated text
   createdAt   DateTime @default(now())
@@ -246,6 +255,17 @@ enum NotificationType {
   HOLIDAY
   COURSE_UPDATE
   SYSTEM
+}
+
+model CourseRegistration {
+  id        String   @id @default(uuid())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+  name      String
+  email     String
+  phone     String?
+  message   String?
+  createdAt DateTime @default(now())
 }
 
 model SystemNotification {
