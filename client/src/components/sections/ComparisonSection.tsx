@@ -28,7 +28,7 @@ export function ComparisonSection({ section }: { section: Section }) {
 
                 <div className="grid gap-6 lg:grid-cols-2 max-w-5xl mx-auto">
                     {section.items?.map((item, index) => (
-                        <Card key={index} className={`border-2 ${index === 1 ? 'border-primary shadow-xl scale-105' : 'border-border'}`}>
+                        <Card key={index} className={`border ${index === 1 ? 'border-primary shadow-xl scale-105' : 'border-border'}`}>
                             <CardHeader className={`${index === 1 ? 'bg-primary/5' : ''}`}>
                                 <div className="flex items-center justify-between mb-2">
                                     <CardTitle className="text-xl md:text-2xl">{item.title}</CardTitle>
