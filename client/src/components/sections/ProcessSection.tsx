@@ -63,7 +63,7 @@ export function ProcessSection({ section }: { section: Section }) {
 
                                     return (
                                         <div key={i} className="flex-1 flex flex-col items-center text-center group min-w-0 px-2">
-                                            <div className="w-16 h-16 rounded-2xl bg-background border-2 border-primary/20 flex items-center justify-center text-2xl font-bold text-primary mb-6 shadow-sm group-hover:border-primary group-hover:shadow-md transition-all z-10 relative">
+                                            <div className="w-16 h-16 rounded-2xl bg-background border border-primary/20 flex items-center justify-center text-2xl font-bold text-primary mb-6 shadow-sm group-hover:border-primary group-hover:shadow-md transition-all z-10 relative">
                                                 {globalIndex + 1}
                                             </div>
                                             <h3 className="text-xl font-bold mb-3">{item.title}</h3>
