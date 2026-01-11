@@ -6,6 +6,8 @@ import { ToastProvider } from '@/contexts/ToastContext';
 import { SettingsProvider } from '@/contexts/SettingsContext';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ConfirmProvider } from '@/components/ConfirmDialog';
+import Script from 'next/script';
+import { UtmTracker } from '@/components/analytics/UtmTracker';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,11 +31,36 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi" suppressHydrationWarning>
+      <head>
+        <Script
+          id="gtm-script"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer', '${process.env.NEXT_PUBLIC_GTM_ID || "GTM-XXXXXX"}');
+          `,
+          }}
+        />
+      </head>
       <body className={inter.className} suppressHydrationWarning={true}>
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${process.env.NEXT_PUBLIC_GTM_ID || "GTM-XXXXXX"}`}
+            height="0"
+            width="0"
+            style={{ display: 'none', visibility: 'hidden' }}
+          />
+        </noscript>
+
         <ToastProvider>
           <AuthProvider>
             <SettingsProvider>
               <ConfirmProvider>
+                <UtmTracker />
                 <MainLayout>{children}</MainLayout>
               </ConfirmProvider>
             </SettingsProvider>

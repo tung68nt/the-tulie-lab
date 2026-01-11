@@ -101,6 +101,10 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/security', securityRoutes);
 app.use('/api/activity', activityRoutes);
 app.use('/api/proxy', proxyRoutes);
+import landingPageRoutes from './modules/landing-pages/landing-pages.routes';
+app.use('/api/landing-pages', landingPageRoutes);
+import systemRoutes from './modules/system/system.routes';
+app.use('/api/system', systemRoutes);
 
 // Start Server
 // Force restart for bundle routes

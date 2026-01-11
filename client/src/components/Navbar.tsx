@@ -206,7 +206,10 @@ export function Navbar() {
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className={`transition-colors hover:text-foreground ${isActive ? 'text-foreground font-semibold' : 'text-foreground/35'}`}
+                                    className={`transition-all duration-200 px-4 py-2 rounded-md hover:text-foreground ${isActive
+                                            ? 'bg-secondary text-foreground font-medium'
+                                            : 'text-muted-foreground hover:bg-secondary/50'
+                                        }`}
                                 >
                                     {link.label}
                                 </Link>

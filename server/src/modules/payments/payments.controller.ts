@@ -6,7 +6,7 @@ import { AuthRequest } from '../../middleware/auth.middleware';
 export const checkout = async (req: Request, res: Response) => {
     try {
         const userId = (req as AuthRequest).user?.id!;
-        const { courseId, promoCodeId } = req.body;
+        const { courseId, promoCodeId, marketing } = req.body;
 
         // Get course to determine price
         const course: any = await require('../../config/prisma').default.course.findUnique({
@@ -17,7 +17,7 @@ export const checkout = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'Course not found' });
         }
 
-        const order = await PaymentService.createOrder(userId, courseId, course.price, promoCodeId);
+        const order = await PaymentService.createOrder(userId, courseId, course.price, promoCodeId, marketing);
         res.json(order);
     } catch (error: any) {
         res.status(500).json({ message: error.message });

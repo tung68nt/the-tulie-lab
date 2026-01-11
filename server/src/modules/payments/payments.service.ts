@@ -2,7 +2,22 @@ import prisma from '../../config/prisma';
 import { OrderStatus } from '@prisma/client';
 
 // Enhanced order creation with promo code support
-export const createOrder = async (userId: string, courseId: string, amount: number, promoCodeId?: string) => {
+export const createOrder = async (
+    userId: string,
+    courseId: string,
+    amount: number,
+    promoCodeId?: string,
+    marketingData?: {
+        source?: string;
+        medium?: string;
+        campaign?: string;
+        term?: string;
+        content?: string;
+        fbc?: string;
+        gclid?: string;
+        clickId?: string;
+    }
+) => {
     // Check if enrolled
     const existingEnrollment = await prisma.enrollment.findUnique({
         where: {
@@ -54,15 +69,29 @@ export const createOrder = async (userId: string, courseId: string, amount: numb
                 code,
                 userId,
                 amount: finalAmount,
-                // originalAmount: promoCodeId ? originalAmount : null, // Removed: Not in schema
-                // discount: promoCodeId ? discount : null, // Removed: Not in schema
                 status: finalAmount <= 0 ? OrderStatus.PAID : OrderStatus.PENDING,
-                // promoCodeId: promoCodeId || null, // Removed: Not in schema
                 courses: {
                     connect: { id: courseId }
                 }
             }
         });
+
+        // Save marketing tracking data if provided
+        if (marketingData) {
+            await tx.marketingLead.create({
+                data: {
+                    orderId: order.id,
+                    source: marketingData.source,
+                    medium: marketingData.medium,
+                    campaign: marketingData.campaign,
+                    term: marketingData.term,
+                    content: marketingData.content,
+                    fbc: marketingData.fbc,
+                    gclid: marketingData.gclid,
+                    clickId: marketingData.clickId,
+                }
+            });
+        }
 
         // If free, enroll immediately
         if (finalAmount <= 0) {

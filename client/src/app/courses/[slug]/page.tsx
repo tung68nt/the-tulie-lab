@@ -8,6 +8,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/contexts/ToastContext';
 import { Clock } from 'lucide-react';
+import { sendGTMEvent } from '@/lib/gtm';
+import { CountdownTimer } from '@/components/CountdownTimer';
 
 // Helper function to parse duration string to seconds
 function parseDurationToSeconds(duration: string): number {
@@ -36,11 +38,26 @@ export default function CoursePage({ params }: { params: Promise<{ slug: string 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [expandedLessonId, setExpandedLessonId] = useState<string | null>(null);
 
+    // Mock discount end date (e.g., 24 hours from now) for demo purposes
+    // In a real app, this should come from the backend course data (course.discountEndDate)
+    const [discountEndDate] = useState(new Date(Date.now() + 24 * 60 * 60 * 1000));
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const courseData = await api.courses.get(slug);
+                const courseData = await api.courses.get(slug) as any;
                 setCourse(courseData);
+
+                // Track ViewContent event
+                sendGTMEvent('view_item', {
+                    currency: 'VND',
+                    value: courseData.price,
+                    items: [{
+                        item_id: courseData.id,
+                        item_name: courseData.title,
+                        price: courseData.price
+                    }]
+                });
 
                 try {
                     const user = await api.users.getProfile() as any;
@@ -95,11 +112,23 @@ export default function CoursePage({ params }: { params: Promise<{ slug: string 
     };
 
     const handleBuyNow = async () => {
+        if (!course) return;
+
+        // Track InitiateCheckout
+        sendGTMEvent('begin_checkout', {
+            currency: 'VND',
+            value: course.price,
+            items: [{
+                item_id: course.id,
+                item_name: course.title,
+                price: course.price
+            }]
+        });
+
         if (!isLoggedIn) {
             router.push('/login');
             return;
         }
-        if (!course) return;
 
         setIsPurchasing(true);
         try {
@@ -200,6 +229,13 @@ export default function CoursePage({ params }: { params: Promise<{ slug: string 
                                 </div>
 
                                 <div className="space-y-4">
+                                    {/* Countdown Timer */}
+                                    {(!course.deploymentStatus || course.deploymentStatus === 'RELEASED') && course.price > 0 && !isEnrolled && (
+                                        <div className="mb-6">
+                                            <CountdownTimer targetDate={discountEndDate} title="Ưu đãi giới hạn kết thúc sau:" />
+                                        </div>
+                                    )}
+
                                     <div className="flex items-end justify-between">
                                         <div>
                                             <p className="text-sm text-zinc-400">Học phí</p>

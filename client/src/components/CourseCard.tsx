@@ -1,6 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader } from './Card';
 import { Button } from './Button';
+import { sendGTMEvent } from '@/lib/gtm';
 
 interface CourseCardProps {
     title: string;
@@ -13,8 +16,20 @@ interface CourseCardProps {
 }
 
 export function CourseCard({ title, slug, description, price, thumbnail, deploymentStatus = 'RELEASED', tag = 'NONE' }: CourseCardProps) {
+    const handleCardClick = () => {
+        sendGTMEvent('view_item', {
+            currency: 'VND',
+            value: price,
+            items: [{
+                item_id: slug,
+                item_name: title,
+                price: price
+            }]
+        });
+    };
+
     return (
-        <Link href={`/courses/${slug}`} className="group block h-full">
+        <Link href={`/courses/${slug}`} className="group block h-full" onClick={handleCardClick}>
             <Card className="flex h-full flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-zinc-800">
                 <div className="relative aspect-video w-full overflow-hidden bg-muted rounded-t-xl">
                     {thumbnail ? (

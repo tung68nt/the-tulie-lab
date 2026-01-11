@@ -310,5 +310,14 @@ export const api = {
     activity: {
         log: (action: string, data: any) => request('/activity/log', { method: 'POST', body: JSON.stringify({ action, ...data }) }),
         list: (limit = 50) => request(`/activity/list?limit=${limit}`)
+    },
+    system: {
+        getStats: () => request('/system/stats'),
+    },
+    landingPages: {
+        list: () => request('/landing-pages'),
+        create: (data: any) => request('/landing-pages', { method: 'POST', body: JSON.stringify(data) }),
+        update: (id: string, data: any) => request(`/landing-pages/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+        delete: (id: string) => request(`/landing-pages/${id}`, { method: 'DELETE' }),
     }
 };

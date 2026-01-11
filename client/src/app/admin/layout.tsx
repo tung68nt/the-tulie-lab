@@ -16,6 +16,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { href: '/admin/courses', label: 'Workshop' },
         { href: '/admin/categories', label: 'Chuyên mục' },
         { href: '/admin/bundles', label: 'Combo' },
+        { href: '/admin/landing-pages', label: 'Landing Pages' },
         { href: '/admin/instructors', label: 'Consultant' },
 
         // Thương mại

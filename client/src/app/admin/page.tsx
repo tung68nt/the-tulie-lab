@@ -128,11 +128,22 @@ export default function AdminDashboardPage() {
     const [exporting, setExporting] = useState(false);
     const [inactiveUsers, setInactiveUsers] = useState<any[]>([]);
     const [loadingInactive, setLoadingInactive] = useState(false);
+    const [systemStats, setSystemStats] = useState<any>(null);
 
     useEffect(() => {
         loadData();
         loadInactiveUsers();
+        loadSystemStats();
     }, [filterType, timePeriod, selectedMonth, selectedYear]);
+
+    const loadSystemStats = async () => {
+        try {
+            const stats = await api.system.getStats();
+            setSystemStats(stats);
+        } catch (e) {
+            console.error('Failed to load system stats', e);
+        }
+    };
 
     const loadData = async () => {
         setLoading(true);
@@ -566,6 +577,38 @@ export default function AdminDashboardPage() {
                                     ))}
                                 </tbody>
                             </table>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
+
+            {/* System Stats Widget */}
+            {systemStats && (
+                <Card>
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-base flex items-center gap-2">
+                            <TrendingUp size={18} />
+                            System Health
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-muted-foreground">Uptime:</span>
+                                <span className="font-medium">{(systemStats.uptime / 3600).toFixed(1)} hours</span>
+                            </div>
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-muted-foreground">App RAM:</span>
+                                <span className="font-medium">{(systemStats.memory.rss / 1024 / 1024).toFixed(0)} MB</span>
+                            </div>
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-muted-foreground">Node Ver:</span>
+                                <span className="font-medium">{systemStats.nodeVersion}</span>
+                            </div>
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-muted-foreground">Time:</span>
+                                <span className="font-medium">{new Date(systemStats.serverTime).toLocaleTimeString('vi-VN')}</span>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
