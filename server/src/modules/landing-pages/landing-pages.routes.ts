@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import * as LandingPagesController from './landing-pages.controller';
-import { authenticate, authorize } from '../../middleware/auth';
+import { authenticate, authorize } from '../../middleware/auth.middleware';
 
 const router = Router();
 

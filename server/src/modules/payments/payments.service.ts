@@ -81,14 +81,14 @@ export const createOrder = async (
             await tx.marketingLead.create({
                 data: {
                     orderId: order.id,
-                    source: marketingData.source,
-                    medium: marketingData.medium,
-                    campaign: marketingData.campaign,
-                    term: marketingData.term,
-                    content: marketingData.content,
-                    fbc: marketingData.fbc,
-                    gclid: marketingData.gclid,
-                    clickId: marketingData.clickId,
+                    source: marketingData.source ?? null,
+                    medium: marketingData.medium ?? null,
+                    campaign: marketingData.campaign ?? null,
+                    term: marketingData.term ?? null,
+                    content: marketingData.content ?? null,
+                    fbc: marketingData.fbc ?? null,
+                    gclid: marketingData.gclid ?? null,
+                    clickId: marketingData.clickId ?? null
                 }
             });
         }

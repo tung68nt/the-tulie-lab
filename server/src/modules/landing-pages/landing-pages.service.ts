@@ -1,36 +1,29 @@
 import prisma from '../../config/prisma';
 
-export const createLandingPage = async (data: {
-    title: string;
-    slug: string;
-    description?: string;
-    sections: any[];
-    isActive?: boolean;
-}) => {
+export const createLandingPage = async (data: any) => {
     return prisma.landingPage.create({
         data: {
             title: data.title,
             slug: data.slug,
-            description: data.description,
-            sections: JSON.stringify(data.sections),
+            description: data.description ?? null,
+            sections: JSON.stringify(data.sections || []),
             isActive: data.isActive ?? true
         }
     });
 };
 
-export const updateLandingPage = async (id: string, data: {
-    title?: string;
-    slug?: string;
-    description?: string;
-    sections?: any[];
-    isActive?: boolean;
-}) => {
+export const updateLandingPage = async (id: string, data: any) => {
+    // Construct update data carefully to avoid undefined/null issues
+    const updateData: any = {};
+    if (data.title !== undefined) updateData.title = data.title;
+    if (data.slug !== undefined) updateData.slug = data.slug;
+    if (data.description !== undefined) updateData.description = data.description;
+    if (data.sections !== undefined) updateData.sections = JSON.stringify(data.sections);
+    if (data.isActive !== undefined) updateData.isActive = data.isActive;
+
     return prisma.landingPage.update({
         where: { id },
-        data: {
-            ...data,
-            sections: data.sections ? JSON.stringify(data.sections) : undefined
-        }
+        data: updateData
     });
 };
 
